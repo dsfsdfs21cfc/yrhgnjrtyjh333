@@ -6,12 +6,11 @@ local Workspace = game:GetService("Workspace")
 
 local localPlayer = Players.LocalPlayer
 
--- 🔒 НОВЫЕ ПАРОЛИ ДЛЯ ТВОЕГО VDS СЕРВЕРА
-local SCANNER_PASSWORD = "WHHWHWWHWHT44"  -- Сканер пароль
-local VDS_PASSWORD = "GJEKRGJK5Y5"       -- VDS пароль  
-local VDS_URL = "https://auroranotifier.pro"   -- Локальный VDS
+-- 🔒 VDS PASSWORD
+local VDS_PASSWORD = "gjg4jgj44fd3233"
+local VDS_URL = "http://95.81.99.228:3000"
 
--- 🔐 ШИФРОВАНИЕ JOBID (XOR + HEX)
+-- 🔐 KONVEER JOBID ENCRYPTION (только для VDS)
 local SECRET = "KHE6HO65O6O50"
 
 local function newTable(n)
@@ -55,233 +54,234 @@ end
 
 -- ⚙️ WEBHOOK SETTINGS BY INCOME RANGE
 local WEBHOOKS = {
-    { -- 1M/s - 25M/s
-        url = 'https://discord.com/api/webhooks/1454372752034365566/EmLdd5U_wxp6Ziy8gAAiGB7MHpeWPaDBZzS8vfAQSD2dWsB0ZyPAEfDYK0n869ObblnT',
-        title = '🟢 Low Income (1-25M/s)',
-        color = 0x00ff00,
-        min = 1_000_000,
-        max = 25_000_000,
-        sendServerInfo = false,
-        sendTeleport = true
-    },
-    { -- 26M/s - 100M/s
-        url = 'https://discord.com/api/webhooks/1454367328044060682/pNGrS2QtodZSTrZYUOfUA4PYACi8j9NlnJERUoxS05idfFJvA1ryd-d-VJAz5_Hue7am',
-        title = '🟡 Medium Income (26-100M/s)',
-        color = 0xffff00,
-        min = 26_000_000,
-        max = 100_000_000,
-        sendServerInfo = false,
-        sendTeleport = false,
-        showJoinerAd = true
-    },
-    { -- 101M/s - 10000M/s
-        url = 'https://discord.com/api/webhooks/1454365052856434709/pJywj0GG3K3XEqhmKZ2Hy3bC_ULOl1iaeZDYlfjXLhH4F-x1bWkb3wDdOZPIMoofSbzu',
-        title = '🔴 High Income (101M+ /s)',
-        color = 0xff0000,
-        min = 101_000_000,
-        max = 10_000_000_000,
-        sendServerInfo = false,
-        sendTeleport = false,
-        showJoinerAd = true
-    },
-    { -- Special brainrots + overpay
-        url = 'https://discord.com/api/webhooks/1454624672078630982/eqhtVZ9JOeJnnxVzWyubzrceo46OfCMGhJ4zhQLRt5aZJb9E7F63U2X8s7iKd4EoK-Rp',
-        title = '⭐️ SPECIAL BRAINROTS',
-        color = 0xff00ff,
-        special = true,
-        sendServerInfo = false,
-        sendTeleport = true
-    }
+{ -- 1M/s - 25M/s
+url = 'https://discord.com/api/webhooks/1454372752034365566/EmLdd5U_wxp6Ziy8gAAiGB7MHpeWPaDBZzS8vfAQSD2dWsB0ZyPAEfDYK0n869ObblnT',
+title = '🟢 Low Income (1-25M/s)',
+color = 0x00ff00,
+min = 1_000_000,
+max = 25_000_000,
+sendServerInfo = false,
+sendTeleport = true
+},
+{ -- 26M/s - 100M/s (основной, без Server Info)
+url = 'https://discord.com/api/webhooks/1454367328044060682/pNGrS2QtodZSTrZYUOfUA4PYACi8j9NlnJERUoxS05idfFJvA1ryd-d-VJAz5_Hue7am',
+title = '🟡 Medium Income (26-100M/s)',
+color = 0xffff00,
+min = 26_000_000,
+max = 100_000_000,
+sendServerInfo = false,
+sendTeleport = false,
+showJoinerAd = true
+},
+{ -- 101M/s - 10000M/s (основной, без Server Info)
+url = 'https://discord.com/api/webhooks/1454365052856434709/pJywj0GG3K3XEqhmKZ2Hy3bC_ULOl1iaeZDYlfjXLhH4F-x1bWkb3wDdOZPIMoofSbzu',
+title = '🔴 High Income (101M+ /s)',
+color = 0xff0000,
+min = 101_000_000,
+max = 10_000_000_000,
+sendServerInfo = false,
+sendTeleport = false,
+showJoinerAd = true
+},
+{ -- Special brainrots + overpay
+url = 'https://discord.com/api/webhooks/1454624672078630982/eqhtVZ9JOeJnnxVzWyubzrceo46OfCMGhJ4zhQLRt5aZJb9E7F63U2X8s7iKd4EoK-Rp',
+title = '⭐️ SPECIAL BRAINROTS',
+color = 0xff00ff,
+special = true,
+sendServerInfo = false,
+sendTeleport = true
+}
 }
 
 -- 📋 SPECIAL BRAINROTS WITH MIN VALUES
 local SPECIAL_BRAINROTS = {
-    ['Garama and Madundung'] = 0,
-    ['Dragon Cannelloni'] = 0,
-    ['La Supreme Combinasion'] = 0,
-    ['Ketupat Kepat'] = 100_000_000,
-    ['Strawberry Elephant'] = 0,
-    ['Ketchuru and Musturu'] = 60_000_000,
-    ['Tralaledon'] = 0,
-    ['Tictac Sahur'] = 100_000_000,
-    ['Burguro And Fryuro'] = 0,
-    ['La Secret Combinasion'] = 0,
-    ['Spooky and Pumpky'] = 0,
-    ['Meowl'] = 0,
-    ['La Casa Boo'] = 0,
-    ['Headless Horseman'] = 0,
-    ['Los Tacoritas'] = 0,
-    ['Capitano Moby'] = 0,
-    ['Cooki and Milki'] = 0,
-    ['Fragrama and Chocrama'] = 0,
-    ['Guest 666'] = 0,
-    ['Fishino Clownino'] = 0,
-    ['Tacorita Bicicleta'] = 170_000_000,
-    ['La Jolly Grande'] = 200_000_000,
-    ['W or L'] = 200_000_000,
-    ['Los Puggies'] = 400_000_000,
-    ['La Taco Combinasion'] = 450_000_000,
-    ['Chipso and Queso'] = 150_000_000,
-    ['Mieteteira Bicicleteira'] = 500_000_000,
-    ['Los Mobilis'] = 500_000_000,
-    ['La Spooky Grande'] = 245_000_000,
-    ['Eviledon'] = 400_000_000,
-    ['Chillin Chili'] = 25_000_000,
-    ['Money Money Puggy'] = 220_000_000,
-    ['Tang Tang Keletang'] = 200_000_000,
-    ['Los Primos'] = 300_000_000,
-    ['Orcaledon'] = 320_000_000,
-    ['Las Sis'] = 300_000_000,
-    ['La Extinct Grande'] = 235_000_000,
-    ['Los Bros'] = 300_000_000,
-    ['Spaghetti Tualetti'] = 300_000_000,
-    ['Esok Sekolah'] = 450_000_000,
-    ['Nuclearo Dinossauro'] = 100_000_000,
-    ['Lavadorito Spinito'] = 0,
-    ['La Ginger Sekolah'] = 225_000_000,
-    ['Reinito Sleighito'] = 0,
-    ['Dragon Gingerini'] = 0,
-    ['Festive 67'] = 0,
-    ['Ginger Gerat'] = 0,
-    ['Jolly Jolly Sahur'] = 0,
-    ['Skibidi Tualet'] = 0,
+['Garama and Madundung'] = 0,
+['Dragon Cannelloni'] = 0,
+['La Supreme Combinasion'] = 0,
+['Ketupat Kepat'] = 100_000_000,
+['Strawberry Elephant'] = 0,
+['Ketchuru and Musturu'] = 60_000_000,
+['Tralaledon'] = 0,
+['Tictac Sahur'] = 100_000_000,
+['Burguro And Fryuro'] = 0,
+['La Secret Combinasion'] = 0,
+['Spooky and Pumpky'] = 0,
+['Meowl'] = 0,
+['La Casa Boo'] = 0,
+['Headless Horseman'] = 0,
+['Los Tacoritas'] = 0,
+['Capitano Moby'] = 0,
+['Cooki and Milki'] = 0,
+['Fragrama and Chocrama'] = 0,
+['Guest 666'] = 0,
+['Fishino Clownino'] = 0,
+['Tacorita Bicicleta'] = 170_000_000,
+['La Jolly Grande'] = 200_000_000,
+['W or L'] = 200_000_000,
+['Los Puggies'] = 400_000_000,
+['La Taco Combinasion'] = 450_000_000,
+['Chipso and Queso'] = 150_000_000,
+['Mieteteira Bicicleteira'] = 500_000_000,
+['Los Mobilis'] = 500_000_000,
+['La Spooky Grande'] = 245_000_000,
+['Eviledon'] = 400_000_000,
+['Chillin Chili'] = 25_000_000,
+['Money Money Puggy'] = 220_000_000,
+['Tang Tang Keletang'] = 200_000_000,
+['Los Primos'] = 300_000_000,
+['Orcaledon'] = 320_000_000,
+['Las Sis'] = 300_000_000,
+['La Extinct Grande'] = 235_000_000,
+['Los Bros'] = 300_000_000,
+['Spaghetti Tualetti'] = 300_000_000,
+['Esok Sekolah'] = 450_000_000,
+['Nuclearo Dinossauro'] = 100_000_000,
+['Lavadorito Spinito'] = 0,
+['La Ginger Sekolah'] = 225_000_000,
+['Reinito Sleighito'] = 0,
+['Dragon Gingerini'] = 0,
+['Festive 67'] = 0,
+['Ginger Gerat'] = 0,
+['Jolly Jolly Sahur'] = 0,
+['Skibidi Tualet'] = 0,
 }
 
 -- 🎮 OBJECTS WITH EMOJIS AND IMPORTANCE
 local OBJECTS = {
-    ['La Vacca Saturno Saturnita'] = { emoji = '🐄', important = false },
-    ['Chimpanzini Spiderini'] = { emoji = '🕷️', important = false },
-    ['Los Tralaleritos'] = { emoji = '🎵', important = false },
-    ['Las Tralaleritas'] = { emoji = '🎶', important = false },
-    ['Graipuss Medussi'] = { emoji = '🐍', important = false },
-    ['Torrtuginni Dragonfrutini'] = { emoji = '🐢', important = false },
-    ['Pot Hotspot'] = { emoji = '🔥', important = false },
-    ['La Grande Combinasion'] = { emoji = '🌟', important = true },
-    ['Garama and Madundung'] = { emoji = '🍝', important = true },
-    ['Secret Lucky Block'] = { emoji = '🎲', important = false },
-    ['Dragon Cannelloni'] = { emoji = '🐲', important = true },
-    ['Nuclearo Dinossauro'] = { emoji = '☢️', important = true },
-    ['Las Vaquitas Saturnitas'] = { emoji = '🐮', important = false },
-    ['Agarrini la Palini'] = { emoji = '🤹', important = false },
-    ['Los Hotspotsitos'] = { emoji = '⚡', important = true },
-    ['Esok Sekolah'] = { emoji = '🏫', important = true },
-    ['Nooo My Hotspot'] = { emoji = '📶', important = false },
-    ['La Supreme Combinasion'] = { emoji = '👑', important = true },
-    ['Admin Lucky Block'] = { emoji = '🔒', important = false },
-    ['Ketupat Kepat'] = { emoji = '🍙', important = true },
-    ['Strawberry Elephant'] = { emoji = '🐘', important = true },
-    ['Spaghetti Tualetti'] = { emoji = '🚽', important = true },
-    ['Ketchuru and Musturu'] = { emoji = '🍾', important = true },
-    ['La Secret Combinasion'] = { emoji = '🕵️', important = true },
-    ['La Karkerkar Combinasion'] = { emoji = '🤖', important = false },
-    ['Los Bros'] = { emoji = '👊', important = true },
-    ['La Extinct Grande'] = { emoji = '💀', important = true },
-    ['Las Sis'] = { emoji = '👭', important = true },
-    ['Tacorita Bicicleta'] = { emoji = '🌮', important = true },
-    ['Tictac Sahur'] = { emoji = '⏰', important = true },
-    ['Celularcini Viciosini'] = { emoji = '📱', important = true },
-    ['Los Primos'] = { emoji = '👬', important = true },
-    ['Tang Tang Keletang'] = { emoji = '🥁', important = true },
-    ['Money Money Puggy'] = { emoji = '💰', important = true },
-    ['Burguro And Fryuro'] = { emoji = '🍔', important = true },
-    ['Chillin Chili'] = { emoji = '🌶️', important = true },
-    ['Eviledon'] = { emoji = '😈', important = true },
-    ['La Spooky Grande'] = { emoji = '👻', important = true },
-    ['Los Mobilis'] = { emoji = '🚗', important = true },
-    ['Spooky and Pumpky'] = { emoji = '🎃', important = true },
-    ['Mieteteira Bicicleteira'] = { emoji = '🚴', important = true },
-    ['Meowl'] = { emoji = '🐱', important = true },
-    ['Chipso and Queso'] = { emoji = '🧀', important = true },
-    ['La Casa Boo'] = { emoji = '👁‍🗨', important = true },
-    ['Headless Horseman'] = { emoji = '👹', important = true },
-    ['Mariachi Corazoni'] = { emoji = '🎺', important = true },
-    ['La Taco Combinasion'] = { emoji = '🌮', important = true },
-    ['Capitano Moby'] = { emoji = '⚓', important = true },
-    ['Guest 666'] = { emoji = '🔥', important = true },
-    ['Cooki and Milki'] = { emoji = '🍪', important = true },
-    ['Los Puggies'] = { emoji = '🐶', important = true },
-    ['Fragrama and Chocrama'] = { emoji = '🍫', important = true },
-    ['Los Spaghettis'] = { emoji = '🍝', important = true },
-    ['Los Tacoritas'] = { emoji = '🌮', important = true },
-    ['Orcaledon'] = { emoji = '🐋', important = true },
-    ['Lavadorito Spinito'] = { emoji = '🌀', important = true },
-    ['Los Planitos'] = { emoji = '🛫', important = true },
-    ['W or L'] = { emoji = '🏆', important = true },
-    ['Fishino Clownino'] = { emoji = '🐠', important = true },
-    ['Chicleteira Noelteira'] = { emoji = '🍬', important = true },
-    ['La Jolly Grande'] = { emoji = '🎁', important = true },
-    ['Los Chicleteiras'] = { emoji = '🍭', important = true },
-    ['Gobblino Uniciclino'] = { emoji = '🦃', important = true },
-    ['Los 67'] = { emoji = '🎰', important = true },
-    ['Los Spooky Combinasionas'] = { emoji = '💀', important = true },
-    ['Swag Soda'] = { emoji = '🥤', important = true },
-    ['Los Combinasionas'] = { emoji = '🧩', important = true },
-    ['Los Burritos'] = { emoji = '🌯', important = true },
-    ['67'] = { emoji = '🎲', important = true },
-    ['Rang Ring Bus'] = { emoji = '🚌', important = true },
-    ['Los Nooo My Hotspotsitos'] = { emoji = '📡', important = true },
-    ['Chicleteirina Bicicleteirina'] = { emoji = '🚲', important = true },
-    ['Noo My Candy'] = { emoji = '🍬', important = true },
-    ['Los Quesadillas'] = { emoji = '🫓', important = true },
-    ['Quesadillo Vampiro'] = { emoji = '🧛', important = true },
-    ['Quesadilla Crocodila'] = { emoji = '🐊', important = true },
-    ['Ho Ho Ho Sahur'] = { emoji = '🎅', important = true },
-    ['Horegini Boom'] = { emoji = '💥', important = true },
-    ['Pot Pumpkin'] = { emoji = '🎃', important = true },
-    ['Pirulitoita Bicicleteira'] = { emoji = '🍭', important = true },
-    ['La Sahur Combinasion'] = { emoji = '🌙', important = true },
-    ['List List List Sahur'] = { emoji = '📋', important = true },
-    ['Noo My Examine'] = { emoji = '📘', important = true },
-    ['Cuadramat and Pakrahmatmamat'] = { emoji = '🧮', important = true },
-    ['Los Cucarachas'] = { emoji = '🪳', important = true },
-    ['1x1x1x1'] = { emoji = '💾', important = true },
-    ['La Ginger Sekolah'] = { emoji = '🎁', important = true },
-    ['Reinito Sleighito'] = { emoji = '🦌', important = true },
-    ['Swaggy Bros'] = { emoji = '🥤', important = true },
-    ['Gingerbread Dragon'] = { emoji = '🥠', important = true },
-    ['Naughty Naughty'] = { emoji = '🦥', important = true },
-    ['Chimnino'] = { emoji = '🌽', important = true },
-    ['Noo my Present'] = { emoji = '🎁', important = true },
-    ['Los Candies'] = { emoji = '🍬', important = true },
-    ['Santa Hotspot'] = { emoji = '🎄', important = true },
-    ['Festive 67'] = { emoji = '🎄', important = true },
-    ['Burrito Bandito'] = { emoji = '🌯', important = true },
-    ['Perrito Burrito'] = { emoji = '🐶', important = true },
-    ['Trickolino'] = { emoji = '😢', important = true },
-    ['La Vacca Jacko Linterino'] = { emoji = '🎃', important = true },
-    ['Los Karkeritos'] = { emoji = '🪑', important = true },
-    ['Karker Sahur'] = { emoji = '🥁', important = true },
-    ['job job job Sahur'] = { emoji = '📜', important = true },
-    ['Frankentteo'] = { emoji = '🧟', important = true },
-    ['Pumpkini Spyderini'] = { emoji = '🎃', important = true },
-    ['Yess My Examine'] = { emoji = '✅', important = true },
-    ['Guerriro Digitale'] = { emoji = '⌨️', important = true },
-    ['Boatito Auratito'] = { emoji = '🚤', important = true },
-    ['Los Tortus'] = { emoji = '🐢', important = true },
-    ['Zombie Tralala'] = { emoji = '🧟', important = true },
-    ['Vulturino Skeletono'] = { emoji = '🦅', important = true },
-    ['La Cucaracha'] = { emoji = '🪳', important = true },
-    ['Extinct Tralalero'] = { emoji = '🦴', important = true },
-    ['Fragola La La La'] = { emoji = '🍓', important = true },
-    ['Los Spyderinis'] = { emoji = '🕷', important = true },
-    ['Blackhole Goat'] = { emoji = '🐐', important = true },
-    ['Chachechi'] = { emoji = '🗣', important = true },
-    ['Dul Dul Dul'] = { emoji = '🐒', important = true },
-    ['Sammyni Spyderini'] = { emoji = '🕷', important = true },
-    ['Jackorilla'] = { emoji = '🦍', important = true },
-    ['Trenostruzzo Turbo 4000'] = { emoji = '🚄', important = true },
-    ['Karkerkar Kurkur'] = { emoji = '🪑', important = true },
-    ['Los Matteos'] = { emoji = '🕶', important = true },
-    ['Bisonte Giuppitere'] = { emoji = '🦬', important = true },
-    ['Los 25'] = { emoji = '💀', important = true },
-    ['25'] = { emoji = '💄', important = true },
-    ['Dragon Gingerini'] = { emoji = '🐍', important = true },
-    ['Donkeyturbo Express'] = { emoji = '🍩', important = true },
-    ['Money Money Reindeer'] = { emoji = '💶', important = true },
-    ['Jolly Jolly Sahur'] = { emoji = '🥶', important = true },
-    ['Los Jolly Combinasionas'] = { emoji = '🗽', important = true },
-    ['Ginger Gerat'] = { emoji = '🥶', important = true },
-    ['Skibidi Toilet'] = { emoji = '🥶', important = true },
+['La Vacca Saturno Saturnita'] = { emoji = '🐄', important = false },
+['Chimpanzini Spiderini'] = { emoji = '🕷️', important = false },
+['Los Tralaleritos'] = { emoji = '🎵', important = false },
+['Las Tralaleritas'] = { emoji = '🎶', important = false },
+['Graipuss Medussi'] = { emoji = '🐍', important = false },
+['Torrtuginni Dragonfrutini'] = { emoji = '🐢', important = false },
+['Pot Hotspot'] = { emoji = '🔥', important = false },
+['La Grande Combinasion'] = { emoji = '🌟', important = true },
+['Garama and Madundung'] = { emoji = '🍝', important = true },
+['Secret Lucky Block'] = { emoji = '🎲', important = false },
+['Dragon Cannelloni'] = { emoji = '🐲', important = true },
+['Nuclearo Dinossauro'] = { emoji = '☢️', important = true },
+['Las Vaquitas Saturnitas'] = { emoji = '🐮', important = false },
+['Agarrini la Palini'] = { emoji = '🤹', important = false },
+['Los Hotspotsitos'] = { emoji = '⚡', important = true },
+['Esok Sekolah'] = { emoji = '🏫', important = true },
+['Nooo My Hotspot'] = { emoji = '📶', important = false },
+['La Supreme Combinasion'] = { emoji = '👑', important = true },
+['Admin Lucky Block'] = { emoji = '🔒', important = false },
+['Ketupat Kepat'] = { emoji = '🍙', important = true },
+['Strawberry Elephant'] = { emoji = '🐘', important = true },
+['Spaghetti Tualetti'] = { emoji = '🚽', important = true },
+['Ketchuru and Musturu'] = { emoji = '🍾', important = true },
+['La Secret Combinasion'] = { emoji = '🕵️', important = true },
+['La Karkerkar Combinasion'] = { emoji = '🤖', important = false },
+['Los Bros'] = { emoji = '👊', important = true },
+['La Extinct Grande'] = { emoji = '💀', important = true },
+['Las Sis'] = { emoji = '👭', important = true },
+['Tacorita Bicicleta'] = { emoji = '🌮', important = true },
+['Tictac Sahur'] = { emoji = '⏰', important = true },
+['Celularcini Viciosini'] = { emoji = '📱', important = true },
+['Los Primos'] = { emoji = '👬', important = true },
+['Tang Tang Keletang'] = { emoji = '🥁', important = true },
+['Money Money Puggy'] = { emoji = '💰', important = true },
+['Burguro And Fryuro'] = { emoji = '🍔', important = true },
+['Chillin Chili'] = { emoji = '🌶️', important = true },
+['Eviledon'] = { emoji = '😈', important = true },
+['La Spooky Grande'] = { emoji = '👻', important = true },
+['Los Mobilis'] = { emoji = '🚗', important = true },
+['Spooky and Pumpky'] = { emoji = '🎃', important = true },
+['Mieteteira Bicicleteira'] = { emoji = '🚴', important = true },
+['Meowl'] = { emoji = '🐱', important = true },
+['Chipso and Queso'] = { emoji = '🧀', important = true },
+['La Casa Boo'] = { emoji = '👁‍🗨', important = true },
+['Headless Horseman'] = { emoji = '👹', important = true },
+['Mariachi Corazoni'] = { emoji = '🎺', important = true },
+['La Taco Combinasion'] = { emoji = '🌮', important = true },
+['Capitano Moby'] = { emoji = '⚓', important = true },
+['Guest 666'] = { emoji = '🔥', important = true },
+['Cooki and Milki'] = { emoji = '🍪', important = true },
+['Los Puggies'] = { emoji = '🐶', important = true },
+['Fragrama and Chocrama'] = { emoji = '🍫', important = true },
+['Los Spaghettis'] = { emoji = '🍝', important = true },
+['Los Tacoritas'] = { emoji = '🌮', important = true },
+['Orcaledon'] = { emoji = '🐋', important = true },
+['Lavadorito Spinito'] = { emoji = '🌀', important = true },
+['Los Planitos'] = { emoji = '🛫', important = true },
+['W or L'] = { emoji = '🏆', important = true },
+['Fishino Clownino'] = { emoji = '🐠', important = true },
+['Chicleteira Noelteira'] = { emoji = '🍬', important = true },
+['La Jolly Grande'] = { emoji = '🎁', important = true },
+['Los Chicleteiras'] = { emoji = '🍭', important = true },
+['Gobblino Uniciclino'] = { emoji = '🦃', important = true },
+['Los 67'] = { emoji = '🎰', important = true },
+['Los Spooky Combinasionas'] = { emoji = '💀', important = true },
+['Swag Soda'] = { emoji = '🥤', important = true },
+['Los Combinasionas'] = { emoji = '🧩', important = true },
+['Los Burritos'] = { emoji = '🌯', important = true },
+['67'] = { emoji = '🎲', important = true },
+['Rang Ring Bus'] = { emoji = '🚌', important = true },
+['Los Nooo My Hotspotsitos'] = { emoji = '📡', important = true },
+['Chicleteirina Bicicleteirina'] = { emoji = '🚲', important = true },
+['Noo My Candy'] = { emoji = '🍬', important = true },
+['Los Quesadillas'] = { emoji = '🫓', important = true },
+['Quesadillo Vampiro'] = { emoji = '🧛', important = true },
+['Quesadilla Crocodila'] = { emoji = '🐊', important = true },
+['Ho Ho Ho Sahur'] = { emoji = '🎅', important = true },
+['Horegini Boom'] = { emoji = '💥', important = true },
+['Pot Pumpkin'] = { emoji = '🎃', important = true },
+['Pirulitoita Bicicleteira'] = { emoji = '🍭', important = true },
+['La Sahur Combinasion'] = { emoji = '🌙', important = true },
+['List List List Sahur'] = { emoji = '📋', important = true },
+['Noo My Examine'] = { emoji = '📘', important = true },
+['Cuadramat and Pakrahmatmamat'] = { emoji = '🧮', important = true },
+['Los Cucarachas'] = { emoji = '🪳', important = true },
+['1x1x1x1'] = { emoji = '💾', important = true },
+['La Ginger Sekolah'] = { emoji = '🎁', important = true },
+['Reinito Sleighito'] = { emoji = '🦌', important = true },
+['Swaggy Bros'] = { emoji = '🥤', important = true },
+['Gingerbread Dragon'] = { emoji = '🥠', important = true },
+['Naughty Naughty'] = { emoji = '🦥', important = true },
+['Chimnino'] = { emoji = '🌽', important = true },
+['Noo my Present'] = { emoji = '🎁', important = true },
+['Los Candies'] = { emoji = '🍬', important = true },
+['Santa Hotspot'] = { emoji = '🎄', important = true },
+['Festive 67'] = { emoji = '🎄', important = true },
+['Burrito Bandito'] = { emoji = '🌯', important = true },
+['Perrito Burrito'] = { emoji = '🐶', important = true },
+['Trickolino'] = { emoji = '😢', important = true },
+['La Vacca Jacko Linterino'] = { emoji = '🎃', important = true },
+['Los Karkeritos'] = { emoji = '🪑', important = true },
+['Karker Sahur'] = { emoji = '🥁', important = true },
+['job job job Sahur'] = { emoji = '📜', important = true },
+['Frankentteo'] = { emoji = '🧟', important = true },
+['Pumpkini Spyderini'] = { emoji = '🎃', important = true },
+['Yess My Examine'] = { emoji = '✅', important = true },
+['Guerriro Digitale'] = { emoji = '⌨️', important = true },
+['Boatito Auratito'] = { emoji = '🚤', important = true },
+['Los Tortus'] = { emoji = '🐢', important = true },
+['Zombie Tralala'] = { emoji = '🧟', important = true },
+['Vulturino Skeletono'] = { emoji = '🦅', important = true },
+['La Cucaracha'] = { emoji = '🪳', important = true },
+['Extinct Tralalero'] = { emoji = '🦴', important = true },
+['Fragola La La La'] = { emoji = '🍓', important = true },
+['Los Spyderinis'] = { emoji = '🕷', important = true },
+['Blackhole Goat'] = { emoji = '🐐', important = true },
+['Chachechi'] = { emoji = '🗣', important = true },
+['Dul Dul Dul'] = { emoji = '🐒', important = true },
+['Sammyni Spyderini'] = { emoji = '🕷', important = true },
+['Jackorilla'] = { emoji = '🦍', important = true },
+['Trenostruzzo Turbo 4000'] = { emoji = '🚄', important = true },
+['Karkerkar Kurkur'] = { emoji = '🪑', important = true },
+['Los Matteos'] = { emoji = '🕶', important = true },
+['Bisonte Giuppitere'] = { emoji = '🦬', important = true },
+['Los 25'] = { emoji = '💀', important = true },
+['25'] = { emoji = '💄', important = true },
+['Dragon Gingerini'] = { emoji = '🐍', important = true },
+['Donkeyturbo Express'] = { emoji = '🍩', important = true },
+['Festive 67'] = { emoji = '6️⃣', important = true },
+['Money Money Reindeer'] = { emoji = '💶', important = true },
+['Jolly Jolly Sahur'] = { emoji = '🥶', important = true },
+['Los Jolly Combinasionas'] = { emoji = '🗽', important = true },
+['Ginger Gerat'] = { emoji = '🥶', important = true },
+['Skibidi Toilet'] = { emoji = '🥶', important = true },  
 }
 
 local ALWAYS_IMPORTANT = {}
@@ -346,8 +346,8 @@ local function getOverheadInfo(animalOverhead)
 
     if not name then
         local anyText = animalOverhead:FindFirstChildOfClass('TextLabel')
-            or animalOverhead:FindFirstChildOfClass('TextButton')
-            or animalOverhead:FindFirstChildOfClass('TextBox')
+        or animalOverhead:FindFirstChildOfClass('TextButton')
+        or animalOverhead:FindFirstChildOfClass('TextBox')
         name = anyText and grabText(anyText) or nil
     end
 
@@ -468,9 +468,11 @@ local function scanDebrisFolder()
             if gui then
                 local nameInst = gui:FindFirstChild("DisplayName")
                 local genInst = gui:FindFirstChild("Generation")
+
                 local name = nameInst and grabText(nameInst) or nil
                 local genText = genInst and grabText(genInst) or nil
                 local genNum = genText and parseGenerationText(genText) or nil
+
                 if name and genNum then
                     table.insert(results, { name = name, gen = genNum, location = 'DebrisFolder' })
                 end
@@ -527,31 +529,30 @@ local function getRequester()
     return http_request or request or (syn and syn.request) or (fluxus and fluxus.request) or (KRNL_HTTP and KRNL_HTTP.request)
 end
 
--- 🔒 Кэш токена VDS
+-- 🔒 Кэш токена
 local VDS_TOKEN_CACHE = {
     token = nil,
     expiresAt = 0
 }
 
--- 🔥 GetVDSToken С 3 УРОВНЯМИ ЗАЩИТЫ
+-- 🔒 Получение токена с VDS (с кэшированием)
 local function GetVDSToken()
     local req = getRequester()
     if not req then return nil end
 
+    -- Проверяем кэш (оставляем 5 минут запаса до истечения)
     local now = os.time()
     if VDS_TOKEN_CACHE.token and VDS_TOKEN_CACHE.expiresAt > (now + 300) then
         return VDS_TOKEN_CACHE.token
     end
 
+    -- Получаем новый токен
     local success, response = pcall(function()
         return req({
             Url = VDS_URL .. "/auth",
             Method = "POST",
-            Headers = {
-                ["Content-Type"] = "application/json",
-                ["X-Scanner-Password"] = SCANNER_PASSWORD  -- ✅ 1-й уровень
-            },
-            Body = HttpService:JSONEncode({password = VDS_PASSWORD})  -- ✅ 2-й уровень
+            Headers = {["Content-Type"] = "application/json"},
+            Body = HttpService:JSONEncode({password = VDS_PASSWORD})
         })
     end)
 
@@ -560,13 +561,14 @@ local function GetVDSToken()
             return HttpService:JSONDecode(response.Body)
         end)
         if ok and data and data.token then
+            -- Сохраняем в кэш
             VDS_TOKEN_CACHE.token = data.token
             VDS_TOKEN_CACHE.expiresAt = math.floor((data.expiresAt or (now * 1000 + 3600000)) / 1000)
-            print("🔑 Новый VDS токен получен!")
+
+            print("🔑 New VDS token cached (scanner)")
             return data.token
         end
     end
-    warn("❌ Не удалось получить VDS токен")
     return nil
 end
 
@@ -581,25 +583,26 @@ local function copyJobIdToClipboard()
             StarterGui:SetCore("SetClipboard", text)
         end)
     end
-    print("📋 JobId скопирован: " .. text)
+    print("📋 JobId copied: " .. text)
 end
 
--- 🔥 sendToVDS С ШИФРОВАНИЕМ XOR + ТРОЙНОЙ ЗАЩИТОЙ
 local function sendToVDS(filteredObjects, webhookConfig)
     local req = getRequester()
-    if not req or #filteredObjects == 0 then return end
+    if not req then return end
+    if #filteredObjects == 0 then return end
 
+    -- 🔒 Получаем токен перед отправкой
     local token = GetVDSToken()
-    if not token then 
-        warn("⚠️ Нет VDS токена")
-        return 
+    if not token then
+        warn("⚠️ Failed to get VDS token")
+        return
     end
 
-    -- 🔐 ШИФРУЕМ JobId ТОЛЬКО ДЛЯ VDS (XOR + HEX)
+    -- 🔐 ШИФРУЕМ JobId ТОЛЬКО ДЛЯ VDS
     local encryptedJobId = EncryptJobId(tostring(game.JobId))
-    
+
     local payload = {
-        jobId = encryptedJobId,  -- 🔐 Зашифрованный JobId!
+        jobId = encryptedJobId,  -- 🔐 Шифрованный JobId
         placeId = game.PlaceId,
         title = webhookConfig.title,
         color = webhookConfig.color,
@@ -626,18 +629,16 @@ local function sendToVDS(filteredObjects, webhookConfig)
             Method = "POST",
             Headers = {
                 ["Content-Type"] = "application/json",
-                ["X-Scanner-Password"] = SCANNER_PASSWORD,  -- ✅ 1-й уровень
-                ["X-Aurora-Token"] = token,                 -- ✅ 2-й уровень
-                ["X-VDS-Password"] = VDS_PASSWORD           -- ✅ 3-й уровень!
+                ["X-Aurora-Token"] = token -- 🔒 Токен в заголовке
             },
             Body = HttpService:JSONEncode(payload),
         })
     end)
 
-    if ok and resp and resp.StatusCode == 200 then
-        print("✅ Отправлено на VDS: " .. #filteredObjects .. " объектов (JobId ЗАШИФРОВАН XOR+HEX)")
+    if ok and resp then
+        print("✅ Sent to VDS: " .. #filteredObjects .. " objects (JobId ENCRYPTED)")
     else
-        warn("❌ VDS отправка провалилась: " .. tostring(resp))
+        warn("⚠️ VDS send failed: " .. tostring(resp))
     end
 end
 
@@ -684,44 +685,44 @@ local function sendDiscordNotificationByRange(filteredObjects, webhookConfig, al
         table.insert(objectsList, string.format('%s%s **%s** (%s)%s%s', mark, emoji, obj.name, formatIncomeNumber(obj.gen), overpayMark, locationMark))
     end
 
-    local objectsText = table.concat(objectsList, '\\n')
+    local objectsText = table.concat(objectsList, '\n')
 
     local descriptionText = webhookConfig.special
-        and string.format('⭐️ Найдено %d специальных brainrots!', #filteredObjects)
-        or string.format('💎 Найдено %d объектов в диапазоне!', #filteredObjects)
+    and string.format('⭐️ Found %d special brainrots!', #filteredObjects)
+    or string.format('💎 Found %d objects in range!', #filteredObjects)
 
     local rangeText = webhookConfig.special
-        and '**Все из специального списка**'
-        or string.format('**%s - %s**', formatIncomeNumber(webhookConfig.min), formatIncomeNumber(webhookConfig.max))
+    and '**All from special list**'
+    or string.format('**%s - %s**', formatIncomeNumber(webhookConfig.min), formatIncomeNumber(webhookConfig.max))
 
     local fields = {
-        { name = '📊 Диапазон дохода', value = rangeText, inline = true },
-        { name = '💰 Объекты:', value = objectsText, inline = false },
+        { name = '📊 Income range', value = rangeText, inline = true },
+        { name = '💰 Objects:', value = objectsText, inline = false },
     }
 
     if webhookConfig.sendServerInfo then
-        table.insert(fields, 1, { name = '🆔 Сервер (Job ID)', value = tostring(jobId), inline = true })
+        table.insert(fields, 1, { name = '🆔 Server (Job ID)', value = tostring(jobId), inline = true })
     end
 
     if webhookConfig.sendTeleport then
-        local teleportLua = string.format("local ts = game:GetService('TeleportService');\\nts:TeleportToPlaceInstance(%d, '%s')", placeId, jobId)
-        table.insert(fields, { name = '🚀 Код телепорта:', value = teleportLua, inline = false })
+        local teleportLua = string.format("local ts = game:GetService('TeleportService');\nts:TeleportToPlaceInstance(%d, '%s')", placeId, jobId)
+        table.insert(fields, { name = '🚀 Teleport code:', value = teleportLua, inline = false })
     elseif webhookConfig.showJoinerAd then
         table.insert(fields, {
-            name = '💎 Хочешь удобство?',
-            value = 'Купить Joiner: https://discord.com/channels/1448597315207299126/1449995006315204891',
+            name = '💎 Want convenience and see the server?',
+            value = 'Buy Joiner here: https://discord.com/channels/1448597315207299126/1449995006315204891',
             inline = false,
         })
     end
 
     local payload = {
-        username = '🔥AURORA',
+        username = '🎯 AURORA FINDER v2.3',
         embeds = { {
             title = webhookConfig.title,
             description = descriptionText,
             color = webhookConfig.color,
             fields = fields,
-            footer = { text = string.format('Найдено: %d • %s', #filteredObjects, os.date('%H:%M:%S')) },
+            footer = { text = string.format('Found: %d • %s', #filteredObjects, os.date('%H:%M:%S')) },
             timestamp = DateTime.now():ToIsoDate(),
         } },
     }
@@ -736,9 +737,9 @@ local function sendDiscordNotificationByRange(filteredObjects, webhookConfig, al
     end)
 
     if not ok then
-        warn('Discord webhook ошибка: ' .. tostring(resp))
+        warn('Discord webhook request failed: ' .. tostring(resp))
     elseif resp and resp.StatusCode and resp.StatusCode >= 300 then
-        warn('Discord HTTP ' .. tostring(resp.StatusCode) .. ': ' .. tostring(resp.Body))
+        warn('Discord webhook HTTP ' .. tostring(resp.StatusCode) .. ': ' .. tostring(resp.Body))
     end
 
     if allowVDS then
@@ -749,6 +750,7 @@ end
 local function scanAndNotify()
     local allFound = collectAll(8.0)
 
+    -- groups: 1=low, 2=medium, 3=high, 4=special
     local groups = {{}, {}, {}, {}}
     local hasSpecial = false
 
@@ -764,6 +766,7 @@ local function scanAndNotify()
     local allowVDS = not hasSpecial
 
     if hasSpecial then
+        -- Only Discord, never VDS (JobId НЕ шифруется для Discord)
         sendDiscordNotificationByRange(groups[4], WEBHOOKS[4], false)
         return
     end
@@ -787,10 +790,8 @@ local function scanAndNotify()
     end
 end
 
--- 🚀 ЗАПУСК
-print("🚀 AURORA SCANNER V5.0 🔐 XOR ENCRYPTION!")
-print("🔒 Тройная защита + XOR шифрование JobId")
-print("F - Рескан | G - Копировать JobId")
+print("🎯 BRAINROT SCANNER v2.3 🔒 LOADED (PASSWORD PROTECTED + JOBID ENCRYPTION)")
+print("F - Rescan | G - Copy JobId")
 scanAndNotify()
 
 local lastScan, DEBOUNCE = 0, 3
@@ -801,7 +802,7 @@ UserInputService.InputBegan:Connect(function(input, gpe)
         local now = os.clock()
         if now - lastScan < DEBOUNCE then return end
         lastScan = now
-        print("🔍 Ручной скан запущен...")
+        print("🔍 Manual scan started...")
         scanAndNotify()
     elseif input.KeyCode == Enum.KeyCode.G then
         copyJobIdToClipboard()
