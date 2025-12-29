@@ -8,7 +8,7 @@ local localPlayer = Players.LocalPlayer
 
 -- 🔒 VDS PASSWORD
 local VDS_PASSWORD = "gjg4jgj44fd3233"
-local VDS_URL = "http://95.81.99.228:3000"
+local VDS_URL = "https://auroranotifier.pro"
 
 -- 🔐 KONVEER JOBID ENCRYPTION (только для VDS)
 local SECRET = "KHE6HO65O6O50"
