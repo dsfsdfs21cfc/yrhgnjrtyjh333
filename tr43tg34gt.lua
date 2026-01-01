@@ -102,7 +102,6 @@ local SPECIAL_BRAINROTS = {
 ['Dragon Gingerini'] = 0,
 ['Skibidi Toilet'] = 0,
 }
-}
 
 -- 🎮 OBJECTS WITH EMOJIS AND IMPORTANCE
 local OBJECTS = {
