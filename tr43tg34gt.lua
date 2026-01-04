@@ -95,7 +95,7 @@ sendTeleport = true
 
 -- 📋 SPECIAL BRAINROTS WITH MIN VALUES
 local SPECIAL_BRAINROTS = {
-['Dragon Cannelloni'] = 999999999999999,
+['Dragon Cannelloni'] = 999999999999,
 }
 
 -- 🎮 OBJECTS WITH EMOJIS AND IMPORTANCE
