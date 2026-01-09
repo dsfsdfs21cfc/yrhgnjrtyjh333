@@ -6,9 +6,10 @@ local VirtualUser = game:GetService("VirtualUser")
 local Workspace = game:GetService("Workspace")
 local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
-local farmSpeed = 30
+local farmSpeed = 25
 local totalCollected = 0
 local bagCount = 0
 local bagMax = 50
@@ -99,6 +100,30 @@ local function getHRP()
     return char and char:FindFirstChild("HumanoidRootPart")
 end
 
+local function disableAllCollisions()
+    pcall(function()
+        if player.Character then
+            for _, part in pairs(player.Character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+        end
+    end)
+    
+    for _, otherPlayer in pairs(Players:GetPlayers()) do
+        if otherPlayer ~= player and otherPlayer.Character then
+            pcall(function()
+                for _, part in pairs(otherPlayer.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                    end
+                end
+            end)
+        end
+    end
+end
+
 local function findNearestToken()
     local hrp = getHRP()
     if not hrp then return nil, math.huge end
@@ -121,6 +146,70 @@ local function findNearestToken()
     end
     
     return nearest, best
+end
+
+local function autoSelectPhone()
+    pcall(function()
+        local playerGui = player:FindFirstChild("PlayerGui")
+        if not playerGui then return end
+        
+        for _, gui in pairs(playerGui:GetDescendants()) do
+            if gui:IsA("TextButton") or gui:IsA("ImageButton") then
+                local name = gui.Name:lower()
+                local text = ""
+                if gui:IsA("TextButton") then
+                    text = gui.Text:lower()
+                end
+                
+                if name:find("phone") or text:find("phone") then
+                    pcall(function() firesignal(gui.MouseButton1Click) end)
+                    pcall(function() gui.MouseButton1Click:Fire() end)
+                    return
+                end
+            end
+        end
+        
+        local mainGui = playerGui:FindFirstChild("MainGUI")
+        if mainGui then
+            local lobby = mainGui:FindFirstChild("Lobby")
+            if lobby then
+                local screens = lobby:FindFirstChild("Screens")
+                if screens then
+                    local christmas = screens:FindFirstChild("Christmas2025")
+                    if christmas then
+                        for _, btn in pairs(christmas:GetDescendants()) do
+                            if btn:IsA("TextButton") or btn:IsA("ImageButton") then
+                                local btnName = btn.Name:lower()
+                                if btnName:find("phone") then
+                                    pcall(function() firesignal(btn.MouseButton1Click) end)
+                                    pcall(function() btn.MouseButton1Click:Fire() end)
+                                    return
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        
+        local remotes = ReplicatedStorage:FindFirstChild("Remotes")
+        if remotes then
+            for _, remote in pairs(remotes:GetDescendants()) do
+                if remote:IsA("RemoteEvent") or remote:IsA("RemoteFunction") then
+                    local remoteName = remote.Name:lower()
+                    if remoteName:find("phone") or remoteName:find("select") or remoteName:find("choose") then
+                        pcall(function()
+                            if remote:IsA("RemoteEvent") then
+                                remote:FireServer("Phone")
+                            else
+                                remote:InvokeServer("Phone")
+                            end
+                        end)
+                    end
+                end
+            end
+        end
+    end)
 end
 
 local CoinCollectedRemote = ReplicatedStorage:FindFirstChild("Remotes")
@@ -155,11 +244,25 @@ player.CharacterAdded:Connect(function()
     isFarming = false
     isResetting = false
     updateStats()
+    
+    task.wait(1)
+    autoSelectPhone()
 end)
 
 player.Idled:Connect(function()
     VirtualUser:CaptureController()
     VirtualUser:ClickButton2(Vector2.new())
+end)
+
+RunService.Stepped:Connect(function()
+    disableAllCollisions()
+end)
+
+task.spawn(function()
+    while true do
+        task.wait(2)
+        autoSelectPhone()
+    end
 end)
 
 task.spawn(function()
@@ -184,14 +287,6 @@ task.spawn(function()
         if token and token:FindFirstChild("TouchInterest") and not isFarming then
             isFarming = true
             
-            pcall(function()
-                for _, part in pairs(player.Character:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.CanCollide = false
-                    end
-                end
-            end)
-            
             if dist > 100 then
                 hrp.CFrame = token.CFrame + Vector3.new(0, 2, 0)
             else
@@ -212,3 +307,6 @@ task.spawn(function()
         end
     end
 end)
+
+task.wait(2)
+autoSelectPhone()
