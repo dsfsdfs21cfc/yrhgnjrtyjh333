@@ -8,6 +8,8 @@ local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local VirtualInputManager = game:GetService("VirtualInputManager")
+local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
 
 local player = Players.LocalPlayer
 local farmSpeed = 22
@@ -16,6 +18,13 @@ local bagCount = 0
 local bagMax = 50
 local isResetting = false
 local currentTween = nil
+
+local lastCheckTime = os.time()
+local lastCheckTotal = 0
+local collectedThisPeriod = 0
+local startTime = os.time()
+local CHECK_INTERVAL = 5 * 60
+local GAME_ID = 142823291
 
 pcall(function()
     for _, gui in pairs(game.CoreGui:GetChildren()) do
@@ -33,7 +42,7 @@ ScreenGui.Parent = game.CoreGui
 
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 250, 0, 100)
+MainFrame.Size = UDim2.new(0, 250, 0, 155)
 MainFrame.Position = UDim2.new(0.5, -125, 0, 10)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
 MainFrame.BorderSizePixel = 0
@@ -59,18 +68,44 @@ Instance.new("UICorner", TitleLabel).CornerRadius = UDim.new(0, 12)
 
 local StatsLabel = Instance.new("TextLabel")
 StatsLabel.Name = "Stats"
-StatsLabel.Size = UDim2.new(1, -20, 0, 50)
+StatsLabel.Size = UDim2.new(1, -20, 0, 105)
 StatsLabel.Position = UDim2.new(0, 10, 0, 40)
 StatsLabel.BackgroundTransparency = 1
-StatsLabel.Text = "❄️ Сумка: 0/50\n📊 Всего: 0"
+StatsLabel.Text = "Загрузка..."
 StatsLabel.TextColor3 = Color3.fromRGB(100, 200, 255)
-StatsLabel.TextSize = 16
+StatsLabel.TextSize = 13
 StatsLabel.Font = Enum.Font.GothamBold
 StatsLabel.TextXAlignment = Enum.TextXAlignment.Left
 StatsLabel.Parent = MainFrame
 
+local function formatTime(seconds)
+    local hours = math.floor(seconds / 3600)
+    local mins = math.floor((seconds % 3600) / 60)
+    local secs = seconds % 60
+    
+    if hours > 0 then
+        return string.format("%d:%02d:%02d", hours, mins, secs)
+    else
+        return string.format("%d:%02d", mins, secs)
+    end
+end
+
 local function updateStats()
-    StatsLabel.Text = "❄️ Сумка: " .. bagCount .. "/" .. bagMax .. "\n📊 Всего: " .. totalCollected
+    local timeLeft = CHECK_INTERVAL - (os.time() - lastCheckTime)
+    if timeLeft < 0 then timeLeft = 0 end
+    
+    local inGameTime = os.time() - startTime
+    
+    StatsLabel.Text = string.format(
+        "❄️ Сумка: %d/%d\n📊 Всего: %d\n📈 За период: %d\n⏱️ В игре: %s\n🔄 Проверка: %s",
+        bagCount,
+        bagMax,
+        totalCollected,
+        collectedThisPeriod,
+        formatTime(inGameTime),
+        formatTime(timeLeft)
+    )
+    StatsLabel.TextColor3 = Color3.fromRGB(100, 200, 255)
 end
 
 local dragging, dragStart, startPos
@@ -170,13 +205,6 @@ local function clickButton(btn)
     end)
     
     pcall(function()
-        if fireclickdetector then
-            local cd = btn:FindFirstChildOfClass("ClickDetector")
-            if cd then fireclickdetector(cd) end
-        end
-    end)
-    
-    pcall(function()
         if syn and syn.fire_signal then
             syn.fire_signal(btn.MouseButton1Click)
         end
@@ -187,12 +215,6 @@ local function clickButton(btn)
             for _, conn in pairs(getconnections(btn.MouseButton1Click)) do
                 pcall(function() conn:Fire() end)
             end
-        end
-    end)
-    
-    pcall(function()
-        if btn.Activated then
-            btn.Activated:Fire()
         end
     end)
 end
@@ -233,11 +255,6 @@ local function autoSelectPhone()
             if gui:IsA("ImageLabel") and gui.Visible then
                 local name = gui.Name:lower()
                 if name:find("phone") then
-                    local btn = gui:FindFirstChildWhichIsA("TextButton") or gui:FindFirstChildWhichIsA("ImageButton")
-                    if btn then
-                        clickButton(btn)
-                        return
-                    end
                     for _, child in pairs(gui:GetDescendants()) do
                         if (child:IsA("TextButton") or child:IsA("ImageButton")) and child.Visible then
                             clickButton(child)
@@ -277,6 +294,79 @@ local function tweenToToken(token)
     currentTween:Play()
 end
 
+local function loadServers()
+    local servers = {}
+    local url = string.format("https://games.roblox.com/v1/games/%d/servers/Public?sortOrder=Desc&limit=100", GAME_ID)
+    
+    local success, response = pcall(function()
+        return game:HttpGet(url)
+    end)
+    
+    if success then
+        local ok, data = pcall(function()
+            return HttpService:JSONDecode(response)
+        end)
+        
+        if ok and data and data.data then
+            for _, srv in ipairs(data.data) do
+                if srv.id and srv.id ~= game.JobId and srv.playing and srv.maxPlayers and srv.playing < srv.maxPlayers then
+                    table.insert(servers, srv.id)
+                end
+            end
+        end
+    end
+    
+    return servers
+end
+
+local function teleportToNewServer()
+    StatsLabel.Text = "🔄 Загрузка серверов..."
+    StatsLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
+    
+    local servers = loadServers()
+    
+    if #servers == 0 then
+        StatsLabel.Text = "⚠️ Нет серверов\nПовтор через 10 сек..."
+        task.wait(10)
+        return teleportToNewServer()
+    end
+    
+    local targetServer = servers[math.random(1, #servers)]
+    
+    StatsLabel.Text = "🚀 Телепорт...\n" .. targetServer:sub(1, 12) .. "..."
+    StatsLabel.TextColor3 = Color3.fromRGB(100, 255, 100)
+    
+    task.wait(1)
+    
+    local success, err = pcall(function()
+        TeleportService:TeleportToPlaceInstance(GAME_ID, targetServer, player)
+    end)
+    
+    if not success then
+        StatsLabel.Text = "❌ Ошибка\nПовтор..."
+        StatsLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+        task.wait(3)
+        return teleportToNewServer()
+    end
+end
+
+local function checkFarmProgress()
+    local currentTime = os.time()
+    local elapsed = currentTime - lastCheckTime
+    
+    if elapsed >= CHECK_INTERVAL then
+        if collectedThisPeriod == 0 then
+            StatsLabel.Text = "⚠️ 0 снежинок за 5 мин!\n🔄 Смена сервера..."
+            StatsLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+            task.wait(2)
+            teleportToNewServer()
+        else
+            lastCheckTime = currentTime
+            collectedThisPeriod = 0
+        end
+    end
+end
+
 local CoinCollectedRemote = ReplicatedStorage:FindFirstChild("Remotes")
     and ReplicatedStorage.Remotes:FindFirstChild("Gameplay")
     and ReplicatedStorage.Remotes.Gameplay:FindFirstChild("CoinCollected")
@@ -287,6 +377,7 @@ if CoinCollectedRemote then
             bagCount = currentBag
             bagMax = maxBag
             totalCollected += 1
+            collectedThisPeriod += 1
             currentTarget = nil
             cancelCurrentTween()
             updateStats()
@@ -332,6 +423,14 @@ task.spawn(function()
     while true do
         task.wait(0.5)
         autoSelectPhone()
+    end
+end)
+
+task.spawn(function()
+    while true do
+        task.wait(1)
+        updateStats()
+        checkFarmProgress()
     end
 end)
 
