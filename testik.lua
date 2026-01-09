@@ -7,6 +7,7 @@ local Workspace = game:GetService("Workspace")
 local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
 
 local player = Players.LocalPlayer
 local farmSpeed = 22
@@ -149,35 +150,49 @@ local function findNearestToken()
 end
 
 local function clickButton(btn)
+    if not btn then return end
+    
+    pcall(function()
+        if btn.AbsolutePosition and btn.AbsoluteSize then
+            local pos = btn.AbsolutePosition + btn.AbsoluteSize / 2
+            pcall(function()
+                VirtualInputManager:SendMouseButtonEvent(pos.X, pos.Y, 0, true, game, 1)
+                task.wait(0.1)
+                VirtualInputManager:SendMouseButtonEvent(pos.X, pos.Y, 0, false, game, 1)
+            end)
+        end
+    end)
+    
     pcall(function()
         if firesignal then
             firesignal(btn.MouseButton1Click)
         end
     end)
+    
     pcall(function()
         if fireclickdetector then
             local cd = btn:FindFirstChildOfClass("ClickDetector")
             if cd then fireclickdetector(cd) end
         end
     end)
-    pcall(function()
-        btn.MouseButton1Click:Fire()
-    end)
-    pcall(function()
-        if btn.Activated then
-            btn.Activated:Fire()
-        end
-    end)
+    
     pcall(function()
         if syn and syn.fire_signal then
             syn.fire_signal(btn.MouseButton1Click)
         end
     end)
+    
     pcall(function()
         if getconnections then
             for _, conn in pairs(getconnections(btn.MouseButton1Click)) do
-                conn:Fire()
+                pcall(function() conn:Fire() end)
             end
+        end
+    end)
+    
+    pcall(function()
+        if btn.Activated then
+            btn.Activated:Fire()
         end
     end)
 end
@@ -188,14 +203,12 @@ local function autoSelectPhone()
         if not playerGui then return end
         
         for _, gui in pairs(playerGui:GetDescendants()) do
-            if gui:IsA("TextButton") or gui:IsA("ImageButton") then
+            if (gui:IsA("TextButton") or gui:IsA("ImageButton")) and gui.Visible then
                 local name = gui.Name:lower()
-                local text = ""
-                if gui:IsA("TextButton") then
-                    text = gui.Text:lower()
-                end
+                local text = gui:IsA("TextButton") and gui.Text:lower() or ""
+                local parent = gui.Parent and gui.Parent.Name:lower() or ""
                 
-                if name:find("phone") or text:find("phone") or name == "phone" then
+                if name:find("phone") or text:find("phone") or name == "phone" or parent:find("phone") then
                     clickButton(gui)
                     return
                 end
@@ -203,16 +216,11 @@ local function autoSelectPhone()
         end
         
         for _, gui in pairs(playerGui:GetDescendants()) do
-            if gui:IsA("Frame") or gui:IsA("ImageLabel") or gui:IsA("TextLabel") then
+            if gui:IsA("Frame") and gui.Visible then
                 local name = gui.Name:lower()
                 if name:find("phone") or name == "phone" then
-                    local btn = gui:FindFirstChildOfClass("TextButton") or gui:FindFirstChildOfClass("ImageButton")
-                    if btn then
-                        clickButton(btn)
-                        return
-                    end
                     for _, child in pairs(gui:GetDescendants()) do
-                        if child:IsA("TextButton") or child:IsA("ImageButton") then
+                        if (child:IsA("TextButton") or child:IsA("ImageButton")) and child.Visible then
                             clickButton(child)
                             return
                         end
@@ -221,59 +229,19 @@ local function autoSelectPhone()
             end
         end
         
-        local paths = {
-            "MainGUI.Lobby.Screens.Christmas2025",
-            "MainGUI.Lobby.Christmas2025",
-            "MainGUI.Game.Christmas2025",
-            "MainGUI.Lobby.Screens.Event",
-            "MainGUI.Lobby.Event",
-            "MainGUI.Screens.Christmas2025",
-        }
-        
-        for _, path in pairs(paths) do
-            local current = playerGui
-            for part in string.gmatch(path, "[^.]+") do
-                current = current:FindFirstChild(part)
-                if not current then break end
-            end
-            
-            if current then
-                for _, btn in pairs(current:GetDescendants()) do
-                    if btn:IsA("TextButton") or btn:IsA("ImageButton") then
-                        local btnName = btn.Name:lower()
-                        local btnText = btn:IsA("TextButton") and btn.Text:lower() or ""
-                        if btnName:find("phone") or btnText:find("phone") then
-                            clickButton(btn)
+        for _, gui in pairs(playerGui:GetDescendants()) do
+            if gui:IsA("ImageLabel") and gui.Visible then
+                local name = gui.Name:lower()
+                if name:find("phone") then
+                    local btn = gui:FindFirstChildWhichIsA("TextButton") or gui:FindFirstChildWhichIsA("ImageButton")
+                    if btn then
+                        clickButton(btn)
+                        return
+                    end
+                    for _, child in pairs(gui:GetDescendants()) do
+                        if (child:IsA("TextButton") or child:IsA("ImageButton")) and child.Visible then
+                            clickButton(child)
                             return
-                        end
-                    end
-                end
-            end
-        end
-        
-        local remotes = ReplicatedStorage:FindFirstChild("Remotes")
-        if remotes then
-            for _, remote in pairs(remotes:GetDescendants()) do
-                if remote:IsA("RemoteEvent") then
-                    local remoteName = remote.Name:lower()
-                    if remoteName:find("select") or remoteName:find("choose") or remoteName:find("device") or remoteName:find("phone") then
-                        pcall(function() remote:FireServer("Phone") end)
-                        pcall(function() remote:FireServer("phone") end)
-                        pcall(function() remote:FireServer(1) end)
-                        pcall(function() remote:FireServer(2) end)
-                    end
-                end
-            end
-            
-            local eventsFolder = remotes:FindFirstChild("Events")
-            if eventsFolder then
-                local christmas = eventsFolder:FindFirstChild("Christmas2025Remotes") or eventsFolder:FindFirstChild("Christmas2025")
-                if christmas then
-                    for _, remote in pairs(christmas:GetChildren()) do
-                        if remote:IsA("RemoteEvent") then
-                            pcall(function() remote:FireServer("Phone") end)
-                            pcall(function() remote:FireServer("phone") end)
-                            pcall(function() remote:FireServer(2) end)
                         end
                     end
                 end
@@ -345,8 +313,8 @@ player.CharacterAdded:Connect(function()
     currentTarget = nil
     updateStats()
     
-    for i = 1, 5 do
-        task.wait(0.5)
+    for i = 1, 10 do
+        task.wait(0.3)
         autoSelectPhone()
     end
 end)
@@ -362,7 +330,7 @@ end)
 
 task.spawn(function()
     while true do
-        task.wait(1)
+        task.wait(0.5)
         autoSelectPhone()
     end
 end)
@@ -397,7 +365,7 @@ task.spawn(function()
     end
 end)
 
-for i = 1, 10 do
-    task.wait(0.5)
+for i = 1, 20 do
+    task.wait(0.3)
     autoSelectPhone()
 end
