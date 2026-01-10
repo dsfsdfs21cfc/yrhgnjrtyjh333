@@ -786,7 +786,7 @@ local function sendDiscordNotificationByRange(filteredObjects, webhookConfig, al
     end
 
     local payload = {
-        username = '🎯 AURORA FINDER v2.4 + MUTATIONS',
+        username = 'AURORA FINDER',
         embeds = { {
             title = webhookConfig.title,
             description = descriptionText,
