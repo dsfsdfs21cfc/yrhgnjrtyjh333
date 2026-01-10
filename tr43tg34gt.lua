@@ -95,7 +95,12 @@ sendTeleport = true
 
 -- 📋 SPECIAL BRAINROTS WITH MIN VALUES
 local SPECIAL_BRAINROTS = {
-['Meowl'] = 99999090999,  
+['Dragon Cannelloni'] = 0,
+['Strawberry Elephant'] = 0,
+['Meowl'] = 0,
+['Headless Horseman'] = 0,
+['Dragon Gingerini'] = 0,
+['Skibidi Toilet'] = 0,
 }
 
 -- 🎮 OBJECTS WITH EMOJIS AND IMPORTANCE
@@ -233,8 +238,13 @@ local OBJECTS = {
 ['Jolly Jolly Sahur'] = { emoji = '🥶', important = true },
 ['Los Jolly Combinasionas'] = { emoji = '🗽', important = true },
 ['Ginger Gerat'] = { emoji = '🥶', important = true },
-['Skibidi Toilet'] = { emoji = '🥶', important = true },
+['Skibidi Toilet'] = { emoji = '🚽', important = true }, 
 ['Tuff Toucan'] = { emoji = '🦜', important = true },
+['Bunito Bunito Spinito'] = { emoji = '🐰', important = true },
+['Tung Tung Tung Sahur'] = { emoji = '🌳', important = true },
+['Bunnyman'] = { emoji = '🐇', important = true },
+['Please my Present'] = { emoji = '🎁', important = true },
+['Giftini Spyderini'] = { emoji = '🕷', important = true },
 }
 
 local ALWAYS_IMPORTANT = {}
