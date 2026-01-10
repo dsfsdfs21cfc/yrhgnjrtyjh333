@@ -145,6 +145,9 @@ local SPECIAL_BRAINROTS = {
     ['Jolly Jolly Sahur'] = { min = 250_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
     ['Skibidi Toilet'] = { min = 0, mutations = {} },
     ['Tuff Toucan'] = { min = 500_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Cerberus'] = { min = 0, mutations = {} },
+    ['Ay Mi Gatito'] = { min = 0, mutations = {} },
+    ['AY MI GATITO MIAU MIAU'] = { min = 0, mutations = {} },
 }
 
 -- 🎮 OBJECTS WITH EMOJIS AND IMPORTANCE
@@ -288,6 +291,9 @@ local OBJECTS = {
     ['Bunnyman'] = { emoji = '🐇', important = true },
     ['Please my Present'] = { emoji = '🎁', important = true },
     ['Giftini Spyderini'] = { emoji = '🕷', important = true },
+    ['Cerberus'] = { emoji = '👹', important = true },
+    ['Ay Mi Gatito'] = { emoji = '😻', important = true },
+    ['AY MI GATITO MIAU MIAU'] = { emoji = '😻', important = true },
 }
 
 local ALWAYS_IMPORTANT = {}
