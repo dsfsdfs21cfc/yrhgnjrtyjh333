@@ -20,7 +20,6 @@ local isResetting = false
 local currentTween = nil
 
 local lastCheckTime = os.time()
-local lastCheckTotal = 0
 local collectedThisPeriod = 0
 local startTime = os.time()
 local CHECK_INTERVAL = 5 * 60
@@ -302,14 +301,14 @@ local function loadServers()
         return game:HttpGet(url)
     end)
     
-    if success then
+    if success and response then
         local ok, data = pcall(function()
             return HttpService:JSONDecode(response)
         end)
         
         if ok and data and data.data then
             for _, srv in ipairs(data.data) do
-                if srv.id and srv.id ~= game.JobId and srv.playing and srv.maxPlayers and srv.playing < srv.maxPlayers then
+                if srv.id and srv.id ~= game.JobId then
                     table.insert(servers, srv.id)
                 end
             end
@@ -325,29 +324,25 @@ local function teleportToNewServer()
     
     local servers = loadServers()
     
-    if #servers == 0 then
-        StatsLabel.Text = "⚠️ Нет серверов\nПовтор через 10 сек..."
-        task.wait(10)
-        return teleportToNewServer()
+    if #servers > 0 then
+        local targetServer = servers[math.random(1, #servers)]
+        
+        StatsLabel.Text = "🚀 Телепорт...\n" .. targetServer:sub(1, 12) .. "..."
+        StatsLabel.TextColor3 = Color3.fromRGB(100, 255, 100)
+        
+        task.wait(1)
+        
+        pcall(function()
+            TeleportService:TeleportToPlaceInstance(GAME_ID, targetServer, player)
+        end)
+        
+        task.wait(5)
     end
     
-    local targetServer = servers[math.random(1, #servers)]
-    
-    StatsLabel.Text = "🚀 Телепорт...\n" .. targetServer:sub(1, 12) .. "..."
-    StatsLabel.TextColor3 = Color3.fromRGB(100, 255, 100)
-    
-    task.wait(1)
-    
-    local success, err = pcall(function()
-        TeleportService:TeleportToPlaceInstance(GAME_ID, targetServer, player)
-    end)
-    
-    if not success then
-        StatsLabel.Text = "❌ Ошибка\nПовтор..."
-        StatsLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
-        task.wait(3)
-        return teleportToNewServer()
-    end
+    StatsLabel.Text = "🔄 Повтор телепорта..."
+    StatsLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
+    task.wait(3)
+    teleportToNewServer()
 end
 
 local function checkFarmProgress()
