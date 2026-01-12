@@ -55,7 +55,7 @@ end
 -- ⚙️ WEBHOOK SETTINGS BY INCOME RANGE
 local WEBHOOKS = {
     { -- 1M/s - 25M/s
-        url = 'https://discord.com/api/webhooks/1454372752034365566/EmLdd5U_wxp6Ziy8gAAiGB7MHpeWPaDBZzS8vfAQSD2dWsB0ZyPAEfDYK0n869ObblnT',
+        url = 'https://discord.com/api/webhooks/1460407533150666803/OKc01gM60tjZNO_Vjrn2IzkohKULm66NMJsCXhyMLzLYf4puiCC6T9aBiv7RmKdIZ_-k',
         title = '🟢 Low Income (1-25M/s)',
         color = 0x00ff00,
         min = 1_000_000,
@@ -64,7 +64,7 @@ local WEBHOOKS = {
         sendTeleport = true
     },
     { -- 26M/s - 100M/s (основной, без Server Info)
-        url = 'https://discord.com/api/webhooks/1456399330662682714/1HTEJNBTO1qhXMex8-5YBB1_Q5ekmyHtgvUJ886zitqpl6IC_aXhjKb5QgpjXns1s4uh',
+        url = 'https://discord.com/api/webhooks/1460407439676412136/iLnLKddTDFW4zkbCnCGW_WRbke_-NbuPeHeSNsCv4Iw0pLrAhvJtdfz5w9mikVyMXv_9',
         title = '🟡 Medium Income (26-100M/s)',
         color = 0xffff00,
         min = 26_000_000,
@@ -74,7 +74,7 @@ local WEBHOOKS = {
         showJoinerAd = true
     },
     { -- 101M/s - 10000M/s (основной, без Server Info)
-        url = 'https://discord.com/api/webhooks/1456399389336801463/kyZ8kGtNnSL3Ee1YJteiCWdKWA_KlVFdUNEVAAWr9_kkwGJc6r-3Xg7D8w56aUxRfa1q',
+        url = 'https://discord.com/api/webhooks/1460407439676412136/iLnLKddTDFW4zkbCnCGW_WRbke_-NbuPeHeSNsCv4Iw0pLrAhvJtdfz5w9mikVyMXv_9',
         title = '🔴 High Income (101M+ /s)',
         color = 0xff0000,
         min = 101_000_000,
