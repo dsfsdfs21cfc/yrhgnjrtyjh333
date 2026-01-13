@@ -6,13 +6,56 @@ local Workspace = game:GetService("Workspace")
 
 local localPlayer = Players.LocalPlayer
 
--- 🆕 ТВОЙ СЕРВЕР ДЛЯ ВСЕХ УВЕДОМЛЕНИЙ
-local MY_SERVER_URL = "http://95.164.123.65:3000"
+-- 🔒 VDS SEND PASSWORD (только для отправки)
+local VDS_SEND_PASSWORD = "send_546564reaqw452151523333"
+local VDS_URL = "https://auroranotifier.pro"
 
--- ⚙️ WEBHOOK SETTINGS BY INCOME RANGE (для передачи на сервер)
+-- 🔐 KONVEER JOBID ENCRYPTION (только для VDS)
+local SECRET = "g45hAT436262155453"
+
+local function newTable(n)
+    return table.create and table.create(n) or {}
+end
+
+local bxor = bit32 and bit32.bxor or bit.bxor
+
+local function xorBytes(str, key)
+    local out = newTable(#str)
+    local keyLen = #key
+    for i = 1, #str do
+        local c = string.byte(str, i)
+        local k = string.byte(key, (i - 1) % keyLen + 1)
+        out[i] = string.char(bxor(c, k))
+    end
+    return table.concat(out)
+end
+
+local function toHex(str)
+    local t = newTable(#str * 2)
+    for i = 1, #str do
+        t[i] = string.format("%02X", string.byte(str, i))
+    end
+    return table.concat(t)
+end
+
+local function fromHex(hex)
+    local t = {}
+    for i = 1, #hex, 2 do
+        local byte = tonumber(hex:sub(i, i+1), 16)
+        t[#t+1] = string.char(byte)
+    end
+    return table.concat(t)
+end
+
+local function EncryptJobId(jobId)
+    local x = xorBytes(jobId, SECRET)
+    return toHex(x)
+end
+
+-- ⚙️ WEBHOOK SETTINGS BY INCOME RANGE
 local WEBHOOKS = {
     { -- 1M/s - 25M/s
-        id = 'low',
+        url = 'https://discord.com/api/webhooks/1460407533150666803/OKc01gM60tjZNO_Vjrn2IzkohKULm66NMJsCXhyMLzLYf4puiCC6T9aBiv7RmKdIZ_-k',
         title = '🟢 Low Income (1-25M/s)',
         color = 0x00ff00,
         min = 1_000_000,
@@ -20,8 +63,8 @@ local WEBHOOKS = {
         sendServerInfo = false,
         sendTeleport = true
     },
-    { -- 26M/s - 100M/s
-        id = 'medium',
+    { -- 26M/s - 100M/s (основной, без Server Info)
+        url = 'https://discord.com/api/webhooks/1460407439676412136/iLnLKddTDFW4zkbCnCGW_WRbke_-NbuPeHeSNsCv4Iw0pLrAhvJtdfz5w9mikVyMXv_9',
         title = '🟡 Medium Income (26-100M/s)',
         color = 0xffff00,
         min = 26_000_000,
@@ -30,8 +73,8 @@ local WEBHOOKS = {
         sendTeleport = false,
         showJoinerAd = true
     },
-    { -- 101M/s - 10000M/s
-        id = 'high',
+    { -- 101M/s - 10000M/s (основной, без Server Info)
+        url = 'https://discord.com/api/webhooks/1460407439676412136/iLnLKddTDFW4zkbCnCGW_WRbke_-NbuPeHeSNsCv4Iw0pLrAhvJtdfz5w9mikVyMXv_9',
         title = '🔴 High Income (101M+ /s)',
         color = 0xff0000,
         min = 101_000_000,
@@ -41,7 +84,7 @@ local WEBHOOKS = {
         showJoinerAd = true
     },
     { -- Special brainrots + overpay + mutations
-        id = 'special',
+        url = 'https://discord.com/api/webhooks/1457015322119897133/kQkqA4AMYLVviEYFT7Rf4Udz6ATSRYPVcPeDtALzHFfveew7jmjGCPE6Q-5KAZViCaIE',
         title = '⭐️ SPECIAL BRAINROTS + MUTATIONS',
         color = 0xff00ff,
         special = true,
@@ -276,6 +319,7 @@ local function findAllPetMutations()
                     }
                     
                     table.insert(petMutations, petInfo)
+                    print(string.format("[%s] %s: %s", plot.Name, descendant.Name, tostring(descendant:GetAttribute("Mutation"))))
                 end
             end
         end
@@ -512,6 +556,7 @@ local function shouldShow(name, gen)
     return (type(gen) == 'number') and gen >= 1_000_000
 end
 
+-- ✨ НОВАЯ ФУНКЦИЯ: проверка мутаций
 local function hasRequiredMutation(name, mutation)
     local brainrotConfig = SPECIAL_BRAINROTS[name]
     if not brainrotConfig then return false end
@@ -528,6 +573,7 @@ local function hasRequiredMutation(name, mutation)
     return false
 end
 
+-- ✨ ОБНОВЛЁННАЯ: проверка special brainrot с учётом мутаций
 local function isSpecialBrainrot(name, gen, mutation)
     local brainrotConfig = SPECIAL_BRAINROTS[name]
     if not brainrotConfig then return false end
@@ -535,15 +581,60 @@ local function isSpecialBrainrot(name, gen, mutation)
     local minValue = brainrotConfig.min
     local mutations = brainrotConfig.mutations or {}
     
+    -- Если есть подходящая мутация, отправляем независимо от числа
     if mutation and hasRequiredMutation(name, mutation) then
         return true
     end
     
+    -- Иначе проверяем минимальное значение
     return gen >= minValue
 end
 
 local function getRequester()
     return http_request or request or (syn and syn.request) or (fluxus and fluxus.request) or (KRNL_HTTP and KRNL_HTTP.request)
+end
+
+-- 🔒 Кэш токена для SEND
+local VDS_TOKEN_CACHE = {
+    token = nil,
+    expiresAt = 0
+}
+
+-- 🔒 Получение SEND токена с VDS (с кэшированием)
+local function GetVDSToken()
+    local req = getRequester()
+    if not req then return nil end
+
+    -- Проверяем кэш (оставляем 5 минут запаса до истечения)
+    local now = os.time()
+    if VDS_TOKEN_CACHE.token and VDS_TOKEN_CACHE.expiresAt > (now + 300) then
+        return VDS_TOKEN_CACHE.token
+    end
+
+    -- Получаем новый SEND токен
+    local success, response = pcall(function()
+        return req({
+            Url = VDS_URL .. "/auth/send",
+            Method = "POST",
+            Headers = {["Content-Type"] = "application/json"},
+            Body = HttpService:JSONEncode({password = VDS_SEND_PASSWORD})
+        })
+    end)
+
+    if success and response and response.StatusCode == 200 then
+        local ok, data = pcall(function()
+            return HttpService:JSONDecode(response.Body)
+        end)
+        if ok and data and data.token then
+            -- Сохраняем в кэш
+            VDS_TOKEN_CACHE.token = data.token
+            VDS_TOKEN_CACHE.expiresAt = math.floor((data.expiresAt or (now * 1000 + 3600000)) / 1000)
+
+            print("🔑 New VDS SEND token cached (scanner)")
+            return data.token
+        end
+    end
+    return nil
 end
 
 local function copyJobIdToClipboard()
@@ -560,80 +651,191 @@ local function copyJobIdToClipboard()
     print("📋 JobId copied: " .. text)
 end
 
--- 🆕 ОТПРАВКА ВСЕГО НА ТВОЙ СЕРВЕР
-local function sendToMyServer(filteredObjects, webhookConfig)
+local function sendToVDS(filteredObjects, webhookConfig)
     local req = getRequester()
     if not req then return end
     if #filteredObjects == 0 then return end
 
-    local jobId = game.JobId
-    local placeId = game.PlaceId
+    -- 🔒 Получаем SEND токен перед отправкой
+    local token = GetVDSToken()
+    if not token then
+        warn("⚠️ Failed to get VDS SEND token")
+        return
+    end
 
-    local objectsData = {}
+    -- 🔐 ШИФРУЕМ JobId ТОЛЬКО ДЛЯ VDS
+    local encryptedJobId = EncryptJobId(tostring(game.JobId))
+
+    local payload = {
+        jobId = encryptedJobId, -- 🔐 Шифрованный JobId
+        placeId = game.PlaceId,
+        title = webhookConfig.title,
+        color = webhookConfig.color,
+        range = { min = webhookConfig.min, max = webhookConfig.max },
+        special = webhookConfig.special or false,
+        sendServerInfo = webhookConfig.sendServerInfo or false,
+        time = os.time(),
+        objects = {},
+    }
+
     for _, obj in ipairs(filteredObjects) do
-        local brainrotConfig = SPECIAL_BRAINROTS[obj.name]
-        local minVal = brainrotConfig and brainrotConfig.min or 0
-        
-        table.insert(objectsData, {
+        table.insert(payload.objects, {
             name = obj.name,
             gen = obj.gen,
-            genFormatted = formatIncomeNumber(obj.gen),
             location = obj.location,
             mutation = obj.mutation or nil,
             important = ALWAYS_IMPORTANT[obj.name] or false,
-            emoji = OBJECTS[obj.name] and OBJECTS[obj.name].emoji or '💰',
-            isOverpay = webhookConfig.special and brainrotConfig and obj.gen > minVal,
-            minValue = minVal,
-            minValueFormatted = formatIncomeNumber(minVal)
+            isSpecial = isSpecialBrainrot(obj.name, obj.gen, obj.mutation),
         })
     end
 
-    local payload = {
-        type = webhookConfig.id,
-        jobId = tostring(jobId),
-        placeId = placeId,
-        title = webhookConfig.title,
-        color = webhookConfig.color,
-        special = webhookConfig.special or false,
-        sendTeleport = webhookConfig.sendTeleport or false,
-        showJoinerAd = webhookConfig.showJoinerAd or false,
-        range = {
-            min = webhookConfig.min,
-            max = webhookConfig.max,
-            minFormatted = formatIncomeNumber(webhookConfig.min),
-            maxFormatted = formatIncomeNumber(webhookConfig.max)
-        },
-        objects = objectsData,
-        objectsCount = #filteredObjects,
-        time = os.time()
-    }
-
     local ok, resp = pcall(function()
         return req({
-            Url = MY_SERVER_URL .. "/webhook",
+            Url = VDS_URL .. "/brainrot",
             Method = "POST",
-            Headers = { ["Content-Type"] = "application/json" },
+            Headers = {
+                ["Content-Type"] = "application/json",
+                ["X-Aurora-Token"] = token,
+                ["X-Aurora-Role"] = "send" -- 🔒 Новая роль для отправки
+            },
             Body = HttpService:JSONEncode(payload),
         })
     end)
 
-    if ok and resp and resp.StatusCode and resp.StatusCode < 300 then
-        print("✅ Sent to SERVER [" .. webhookConfig.id .. "]: " .. #filteredObjects .. " objects")
+    if ok and resp then
+        print("✅ Sent to VDS: " .. #filteredObjects .. " objects (JobId ENCRYPTED)")
     else
-        warn("⚠️ SERVER send failed: " .. tostring(resp and resp.StatusCode or resp))
+        warn("⚠️ VDS send failed: " .. tostring(resp))
+    end
+end
+
+local function sendDiscordNotificationByRange(filteredObjects, webhookConfig, allowVDS)
+    local req = getRequester()
+    if not req then return end
+    if #filteredObjects == 0 then return end
+
+    -- Discord получает НЕШИФРОВАННЫЙ JobId
+    local jobId = game.JobId
+    local placeId = game.PlaceId
+
+    local important, regular = {}, {}
+    for _, obj in ipairs(filteredObjects) do
+        if ALWAYS_IMPORTANT[obj.name] then
+            table.insert(important, obj)
+        else
+            table.insert(regular, obj)
+        end
+    end
+
+    table.sort(important, function(a, b) return a.gen > b.gen end)
+    table.sort(regular, function(a, b) return a.gen > b.gen end)
+
+    local sorted = {}
+    for _, obj in ipairs(important) do table.insert(sorted, obj) end
+    for _, obj in ipairs(regular) do table.insert(sorted, obj) end
+
+    local objectsList = {}
+    for i = 1, math.min(15, #sorted) do
+        local obj = sorted[i]
+        local emoji = OBJECTS[obj.name] and OBJECTS[obj.name].emoji or '💰'
+        local mark = ALWAYS_IMPORTANT[obj.name] and '⭐️ ' or ''
+        local locationMark = obj.location == 'DebrisFolder' and ' 🔥' or ''
+
+        local overpayMark = ''
+        local mutationMark = ''
+        
+        if webhookConfig.special and SPECIAL_BRAINROTS[obj.name] then
+            local brainrotConfig = SPECIAL_BRAINROTS[obj.name]
+            local minVal = brainrotConfig.min
+            
+            -- ✨ Показываем мутацию, если она есть
+            if obj.mutation then
+                mutationMark = string.format(' 🎨 **%s**', obj.mutation)
+            end
+            
+            if obj.gen > minVal then
+                overpayMark = string.format(' 🔥 **OVERPAY** (min: %s)', formatIncomeNumber(minVal))
+            end
+        end
+
+        table.insert(objectsList, string.format('%s%s **%s** (%s)%s%s%s', mark, emoji, obj.name, formatIncomeNumber(obj.gen), mutationMark, overpayMark, locationMark))
+    end
+
+    local objectsText = table.concat(objectsList, '\n')
+
+    local descriptionText = webhookConfig.special
+        and string.format('⭐️ Found %d special brainrots!', #filteredObjects)
+        or string.format('💎 Found %d objects in range!', #filteredObjects)
+
+    local rangeText = webhookConfig.special
+        and '**All from special list + mutations**'
+        or string.format('**%s - %s**', formatIncomeNumber(webhookConfig.min), formatIncomeNumber(webhookConfig.max))
+
+    local fields = {
+        { name = '📊 Income range', value = rangeText, inline = true },
+        { name = '💰 Objects:', value = objectsText, inline = false },
+    }
+
+    if webhookConfig.sendServerInfo then
+        table.insert(fields, 1, { name = '🆔 Server (Job ID)', value = tostring(jobId), inline = true })
+    end
+
+    if webhookConfig.sendTeleport then
+        local teleportLua = string.format("local ts = game:GetService('TeleportService');\nts:TeleportToPlaceInstance(%d, '%s')", placeId, jobId)
+        table.insert(fields, { name = '🚀 Teleport code:', value = teleportLua, inline = false })
+    elseif webhookConfig.showJoinerAd then
+        table.insert(fields, {
+            name = '💎 Want convenience and see the server?',
+            value = 'Buy Joiner here: https://discord.com/channels/1448597315207299126/1449995006315204891',
+            inline = false,
+        })
+    end
+
+    local payload = {
+        username = 'AURORA FINDER',
+        embeds = { {
+            title = webhookConfig.title,
+            description = descriptionText,
+            color = webhookConfig.color,
+            fields = fields,
+            footer = { text = string.format('Found: %d • %s', #filteredObjects, os.date('%H:%M:%S')) },
+            timestamp = DateTime.now():ToIsoDate(),
+        } },
+    }
+
+    local ok, resp = pcall(function()
+        return req({
+            Url = webhookConfig.url,
+            Method = 'POST',
+            Headers = { ['Content-Type'] = 'application/json' },
+            Body = HttpService:JSONEncode(payload),
+        })
+    end)
+
+    if not ok then
+        warn('Discord webhook request failed: ' .. tostring(resp))
+    elseif resp and resp.StatusCode and resp.StatusCode >= 300 then
+        warn('Discord webhook HTTP ' .. tostring(resp.StatusCode) .. ': ' .. tostring(resp.Body))
+    end
+
+    if allowVDS then
+        sendToVDS(filteredObjects, webhookConfig)
     end
 end
 
 local function scanAndNotify()
     local allFound = collectAll(8.0)
     
+    -- ✨ Получаем мутации
     local mutations = findAllPetMutations()
     
+    -- ✨ Создаём карту мутаций: имя питомца -> мутация
     local mutationMap = {}
     for _, pet in ipairs(mutations) do
         mutationMap[pet.PetName] = pet.Mutation
     end
     
+    -- ✨ Добавляем мутации к найденным объектам
     for _, obj in ipairs(allFound) do
         obj.mutation = mutationMap[obj.name]
     end
@@ -651,8 +853,11 @@ local function scanAndNotify()
         end
     end
 
+    local allowVDS = not hasSpecial
+
     if hasSpecial then
-        sendToMyServer(groups[4], WEBHOOKS[4])
+        -- Only Discord, never VDS (JobId НЕ шифруется для Discord)
+        sendDiscordNotificationByRange(groups[4], WEBHOOKS[4], false)
         return
     end
 
@@ -670,12 +875,12 @@ local function scanAndNotify()
 
     for i, group in ipairs(groups) do
         if #group > 0 and i ~= 4 then
-            sendToMyServer(group, WEBHOOKS[i])
+            sendDiscordNotificationByRange(group, WEBHOOKS[i], allowVDS)
         end
     end
 end
 
-print("🎯 BRAINROT SCANNER v3.0 🆕 ALL TO MY SERVER")
+print("🎯 BRAINROT SCANNER v2.4 🔒 MUTATIONS SUPPORT")
 print("F - Rescan | G - Copy JobId")
 scanAndNotify()
 
