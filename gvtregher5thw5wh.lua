@@ -55,7 +55,7 @@ end
 -- ⚙️ WEBHOOK SETTINGS BY INCOME RANGE
 local WEBHOOKS = {
     { -- 1M/s - 25M/s
-        url = 'https://discord.com/api/webhooks/1460556831628722240/nl-1S-tCZdZqarMInd8VyiMcRmLxasrMcOpCbgKszMdtDywNV_kLzeHChx6ebLP4fvr5',
+        url = 'https://discord.com/api/webhooks/1454372752034365566/EmLdd5U_wxp6Ziy8gAAiGB7MHpeWPaDBZzS8vfAQSD2dWsB0ZyPAEfDYK0n869ObblnT',
         title = '🟢 Low Income (1-25M/s)',
         color = 0x00ff00,
         min = 1_000_000,
@@ -64,7 +64,7 @@ local WEBHOOKS = {
         sendTeleport = true
     },
     { -- 26M/s - 100M/s (основной, без Server Info)
-        url = 'https://discord.com/api/webhooks/1460556831628722240/nl-1S-tCZdZqarMInd8VyiMcRmLxasrMcOpCbgKszMdtDywNV_kLzeHChx6ebLP4fvr5',
+        url = 'https://discord.com/api/webhooks/1456399330662682714/1HTEJNBTO1qhXMex8-5YBB1_Q5ekmyHtgvUJ886zitqpl6IC_aXhjKb5QgpjXns1s4uh',
         title = '🟡 Medium Income (26-100M/s)',
         color = 0xffff00,
         min = 26_000_000,
@@ -74,7 +74,7 @@ local WEBHOOKS = {
         showJoinerAd = true
     },
     { -- 101M/s - 10000M/s (основной, без Server Info)
-        url = 'https://discord.com/api/webhooks/1460556747092656234/vthKLlwyuzhN4zTjcMuFZJTzhc3-EM3xbBjryhsKapXPjBIHeiu5VjBVfdhL0CUEUoMg',
+        url = 'https://discord.com/api/webhooks/1456399389336801463/kyZ8kGtNnSL3Ee1YJteiCWdKWA_KlVFdUNEVAAWr9_kkwGJc6r-3Xg7D8w56aUxRfa1q',
         title = '🔴 High Income (101M+ /s)',
         color = 0xff0000,
         min = 101_000_000,
@@ -95,7 +95,7 @@ local WEBHOOKS = {
 
 -- 📋 SPECIAL BRAINROTS WITH MIN VALUES + MUTATIONS
 local SPECIAL_BRAINROTS = {
-    ['Garama and Madundung'] = { min = 99999999, mutations = {} },
+    ['Garama and Madundung'] = { min = 999999909, mutations = {} },
 }
 
 -- 🎮 OBJECTS WITH EMOJIS AND IMPORTANCE
