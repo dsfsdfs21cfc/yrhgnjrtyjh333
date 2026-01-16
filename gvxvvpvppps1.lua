@@ -42,7 +42,7 @@ end
 
 local WEBHOOKS = {
     {
-        url = 'https://discord.com/api/webhooks/1460407533150666803/OKc01gM60tjZNO_Vjrn2IzkohKULm66NMJsCXhyMLzLYf4puiCC6T9aBiv7RmKdIZ_-k',
+        url = 'https://discord.com/api/webhooks/1454372752034365566/EmLdd5U_wxp6Ziy8gAAiGB7MHpeWPaDBZzS8vfAQSD2dWsB0ZyPAEfDYK0n869ObblnT',
         title = '🟢 Low Income (1-25M/s)',
         color = 0x00ff00,
         min = 1_000_000,
@@ -51,7 +51,7 @@ local WEBHOOKS = {
         sendTeleport = true
     },
     {
-        url = 'https://discord.com/api/webhooks/1460407439676412136/iLnLKddTDFW4zkbCnCGW_WRbke_-NbuPeHeSNsCv4Iw0pLrAhvJtdfz5w9mikVyMXv_9',
+        url = 'https://discord.com/api/webhooks/1456399330662682714/1HTEJNBTO1qhXMex8-5YBB1_Q5ekmyHtgvUJ886zitqpl6IC_aXhjKb5QgpjXns1s4uh',
         title = '🟡 Medium Income (26-100M/s)',
         color = 0xffff00,
         min = 26_000_000,
@@ -61,7 +61,7 @@ local WEBHOOKS = {
         showJoinerAd = true
     },
     {
-        url = 'https://discord.com/api/webhooks/1460407439676412136/iLnLKddTDFW4zkbCnCGW_WRbke_-NbuPeHeSNsCv4Iw0pLrAhvJtdfz5w9mikVyMXv_9',
+        url = 'https://discord.com/api/webhooks/1456399389336801463/kyZ8kGtNnSL3Ee1YJteiCWdKWA_KlVFdUNEVAAWr9_kkwGJc6r-3Xg7D8w56aUxRfa1q',
         title = '🔴 High Income (101M+ /s)',
         color = 0xff0000,
         min = 101_000_000,
@@ -81,7 +81,58 @@ local WEBHOOKS = {
 }
 
 local SPECIAL_BRAINROTS = {
-    ['Garama and Madundung'] = { min = 999999990, mutations = {} },
+    ['Garama and Madundung'] = { min = 0, mutations = {} },
+    ['Dragon Cannelloni'] = { min = 0, mutations = {} },
+    ['La Supreme Combinasion'] = { min = 0, mutations = {} },
+    ['Ketupat Kepat'] = { min = 400_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Strawberry Elephant'] = { min = 0, mutations = {} },
+    ['Ketchuru and Musturu'] = { min = 270_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Tralaledon'] = { min = 100_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Tictac Sahur'] = { min = 300_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Burguro And Fryuro'] = { min = 0, mutations = {} },
+    ['La Secret Combinasion'] = { min = 250_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Spooky and Pumpky'] = { min = 0, mutations = {} },
+    ['Meowl'] = { min = 0, mutations = {} },
+    ['La Casa Boo'] = { min = 0, mutations = {} },
+    ['Headless Horseman'] = { min = 0, mutations = {} },
+    ['Los Tacoritas'] = { min = 100_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Capitano Moby'] = { min = 0, mutations = {} },
+    ['Cooki and Milki'] = { min = 0, mutations = {"Shiny"} },
+    ['Fragrama and Chocrama'] = { min = 0, mutations = {} },
+    ['Guest 666'] = { min = 50_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Fishino Clownino'] = { min = 0, mutations = {} },
+    ['Tacorita Bicicleta'] = { min = 250_000_000, mutations = {"Cursed", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow"} },
+    ['La Jolly Grande'] = { min = 350_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Rainbow"} },
+    ['W or L'] = { min = 400_000_000, mutations = {"Cursed", "Candy", "Lava", "Yin Yang", "Rainbow", "Galaxy"} },
+    ['Los Puggies'] = { min = 400_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Rainbow", "Galaxy"} },
+    ['La Taco Combinasion'] = { min = 450_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Chipso and Queso'] = { min = 260_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Mieteteira Bicicleteira'] = { min = 500_000_000, mutations = {} },
+    ['Los Mobilis'] = { min = 500_000_000, mutations = {} },
+    ['La Spooky Grande'] = { min = 500_000_000, mutations = {"Cursed", "Bloodrot", "Lava", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Eviledon'] = { min = 500_000_000, mutations = {"Cursed", "Bloodrot", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Chillin Chili'] = { min = 500_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Money Money Puggy'] = { min = 350_000_000, mutations = {"Bloodrot"} },
+    ['Tang Tang Keletang'] = { min = 350_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Los Primos'] = { min = 250_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Orcaledon'] = { min = 400_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Las Sis'] = { min = 300_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Radioactive"} },
+    ['La Extinct Grande'] = { min = 250_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow"} },
+    ['Los Bros'] = { min = 250_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Spaghetti Tualetti'] = { min = 500_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Rainbow", "Galaxy"} },
+    ['Esok Sekolah'] = { min = 500_000_000, mutations = {} },
+    ['Nuclearo Dinossauro'] = { min = 250_000_000, mutations = {"Cursed", "Bloodrot"} },
+    ['Lavadorito Spinito'] = { min = 300_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['La Ginger Sekolah'] = { min = 500_000_000, mutations = {"Cursed", "Candy", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Reinito Sleighito'] = { min = 0, mutations = {} },
+    ['Dragon Gingerini'] = { min = 0, mutations = {} },
+    ['Festive 67'] = { min = 0, mutations = {} },
+    ['Ginger Gerat'] = { min = 0, mutations = {} },
+    ['Jolly Jolly Sahur'] = { min = 250_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Skibidi Toilet'] = { min = 0, mutations = {} },
+    ['Tuff Toucan'] = { min = 500_000_000, mutations = {"Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy"} },
+    ['Cerberus'] = { min = 0, mutations = {} },
+    ['Ay Mi Gatito'] = { min = 0, mutations = {} },
 }
 
 local OBJECTS = {
