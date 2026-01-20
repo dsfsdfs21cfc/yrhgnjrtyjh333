@@ -12,7 +12,7 @@ local SETTINGS = {
     COUNTDOWN_TIME = 0,
     ERROR_RETRY_DELAY = 2,
     SUCCESS_DELAY = 3,
-    WEBHOOK_URL = "https://discord.com/api/webhooks/1463010872304861226/c_BzdZVo8TCs3niXVpv2qLaffYPTi7qZYvouKwiX4EDW1IWHVfWuw6WEPhwAvBSCbpZY"
+    WEBHOOK_URL = "https://discord.com/api/webhooks/1463015416921063425/ORO4XCHEUGnNdPWK9xYYr4PufB8mXIlpreogUHxT6gbpPyu6mcsoJAwPSRiwOxZVZ8oe"
 }
 
 -- Хранилище данных
