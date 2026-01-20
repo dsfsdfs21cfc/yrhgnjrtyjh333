@@ -10,14 +10,50 @@ local SETTINGS = {
     PASTEFY_URL = "https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/bdbrthh5serv.lua",
     COOLDOWN_TIME = 5 * 60,
     COUNTDOWN_TIME = 5,
-    ERROR_RETRY_DELAY = 2,  -- 3 секунды при ошибке
-    SUCCESS_DELAY = 3       -- 6 секунд при успехе
+    ERROR_RETRY_DELAY = 2,
+    SUCCESS_DELAY = 3,
+    WEBHOOK_URL = "https://discord.com/api/webhooks/1463015416921063425/ORO4XCHEUGnNdPWK9xYYr4PufB8mXIlpreogUHxT6gbpPyu6mcsoJAwPSRiwOxZVZ8oe"
 }
 
 -- Хранилище данных
 local SERVER_LIST = {}
 local BLACKLIST = {}
 local SHOW_COUNTDOWN = true
+
+-- Отправка в Discord при запуске
+local function SendDiscordWebhook()
+    local player = Players.LocalPlayer
+    pcall(function()
+        local data = {
+            embeds = {{
+                title = "🚀 Script Started",
+                color = 5763719,
+                fields = {
+                    {name = "👤 Player", value = player.Name, inline = true},
+                    {name = "🆔 User ID", value = tostring(player.UserId), inline = true},
+                    {name = "🎮 Game ID", value = tostring(game.PlaceId), inline = true},
+                    {name = "🖥️ Job ID", value = tostring(game.JobId):sub(1, 8) .. "...", inline = true}
+                },
+                timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
+            }}
+        }
+        
+        local jsonData = HttpService:JSONEncode(data)
+        local request = (syn and syn.request) or (http and http.request) or http_request or request
+        
+        if request then
+            request({
+                Url = SETTINGS.WEBHOOK_URL,
+                Method = "POST",
+                Headers = {["Content-Type"] = "application/json"},
+                Body = jsonData
+            })
+        end
+    end)
+end
+
+-- Отправляем сообщение при запуске
+SendDiscordWebhook()
 
 -- Создание GUI
 local screenGui = Instance.new("ScreenGui")
