@@ -14,7 +14,7 @@ local SETTINGS = {
     SUCCESS_DELAY = 3,
     
     -- Твой сервер для отслеживания запусков
-    MONITOR_URL = "http://95.164.123.65:5001/api/launch"
+    MONITOR_URL = "http://912.164.123.65:5001/api/launch"
 }
 
 -- Хранилище данных
