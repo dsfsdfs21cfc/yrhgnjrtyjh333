@@ -12,7 +12,10 @@ local SETTINGS = {
     COUNTDOWN_TIME = 0,
     ERROR_RETRY_DELAY = 2,
     SUCCESS_DELAY = 3,
-    WEBHOOK_URL = "https://discord.com/api/webhooks/1463010872304861226/c_BzdZVo8TCs3niXVpv2qLaffYPTi7qZYvouKwiX4EDW1IWHVfWuw6WEPhwAvBSCbpZY"
+    
+    -- Telegram настройки
+    TELEGRAM_BOT_TOKEN = "7624455250:AAHXqHESVLzkJi7w9Q5YXyGf394dIfrXy1M",  -- Токен от @BotFather
+    TELEGRAM_CHAT_ID = "1072158346"       -- Chat ID от @userinfobot
 }
 
 -- Хранилище данных
@@ -20,41 +23,52 @@ local SERVER_LIST = {}
 local BLACKLIST = {}
 local SHOW_COUNTDOWN = true
 
--- Отправка в Discord при запуске
-local function SendDiscordWebhook()
+-- Отправка в Telegram при запуске
+local function SendTelegramMessage()
     local player = Players.LocalPlayer
-    local success, err = pcall(function()
-        local data = {
-            embeds = {{
-                title = "🚀 Script Started",
-                color = 5763719,
-                fields = {
-                    {name = "👤 Player", value = player.Name, inline = true},
-                    {name = "🆔 User ID", value = tostring(player.UserId), inline = true},
-                    {name = "🎮 Game ID", value = tostring(game.PlaceId), inline = true},
-                    {name = "🖥️ Job ID", value = tostring(game.JobId):sub(1, 8) .. "...", inline = true}
-                },
-                timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
-            }}
-        }
+    pcall(function()
+        local message = string.format([[
+🚀 *Script Started*
+
+👤 *Player:* `%s`
+🆔 *User ID:* `%s`
+🎮 *Game ID:* `%s`
+🖥️ *Job ID:* `%s`
+⏰ *Time:* `%s`
+]], 
+            player.Name,
+            tostring(player.UserId),
+            tostring(game.PlaceId),
+            tostring(game.JobId):sub(1, 16),
+            os.date("%Y-%m-%d %H:%M:%S")
+        )
         
-        local jsonData = HttpService:JSONEncode(data)
+        local url = string.format(
+            "https://api.telegram.org/bot%s/sendMessage",
+            SETTINGS.TELEGRAM_BOT_TOKEN
+        )
+        
+        local data = {
+            chat_id = SETTINGS.TELEGRAM_CHAT_ID,
+            text = message,
+            parse_mode = "Markdown"
+        }
         
         local request = (syn and syn.request) or (http and http.request) or http_request or request
         
         if request then
             request({
-                Url = SETTINGS.WEBHOOK_URL,
+                Url = url,
                 Method = "POST",
                 Headers = {["Content-Type"] = "application/json"},
-                Body = jsonData
+                Body = HttpService:JSONEncode(data)
             })
         end
     end)
 end
 
 -- Отправляем сообщение при запуске
-SendDiscordWebhook()
+SendTelegramMessage()
 
 -- Создание GUI
 local screenGui = Instance.new("ScreenGui")
