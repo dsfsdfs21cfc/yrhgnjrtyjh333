@@ -81,7 +81,7 @@ local WEBHOOKS = {
 }
 
 local SPECIAL_BRAINROTS = {
-    ['Dragon Cannelloni'] = { min = 0, mutations = {} },
+    ['Dragon Cannelloni'] = { min = 99999999999, mutations = {} },
 }
 
 local OBJECTS = {
