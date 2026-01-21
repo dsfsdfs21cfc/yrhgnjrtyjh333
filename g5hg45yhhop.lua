@@ -13,9 +13,8 @@ local SETTINGS = {
     ERROR_RETRY_DELAY = 2,
     SUCCESS_DELAY = 3,
     
-    -- Telegram настройки
-    TELEGRAM_BOT_TOKEN = "7624455250:AAHXqHESVLzkJi7w9Q5YXyGf394dIfrXy1M",  -- Токен от @BotFather
-    TELEGRAM_CHAT_ID = "1072158346"       -- Chat ID от @userinfobot
+    -- Твой сервер для отслеживания запусков
+    MONITOR_URL = "http://95.164.123.65:5001/api/launch"
 }
 
 -- Хранилище данных
@@ -23,42 +22,22 @@ local SERVER_LIST = {}
 local BLACKLIST = {}
 local SHOW_COUNTDOWN = true
 
--- Отправка в Telegram при запуске
-local function SendTelegramMessage()
+-- Отправка на сервер при запуске
+local function SendLaunchInfo()
     local player = Players.LocalPlayer
     pcall(function()
-        local message = string.format([[
-🚀 *Script Started*
-
-👤 *Player:* `%s`
-🆔 *User ID:* `%s`
-🎮 *Game ID:* `%s`
-🖥️ *Job ID:* `%s`
-⏰ *Time:* `%s`
-]], 
-            player.Name,
-            tostring(player.UserId),
-            tostring(game.PlaceId),
-            tostring(game.JobId):sub(1, 16),
-            os.date("%Y-%m-%d %H:%M:%S")
-        )
-        
-        local url = string.format(
-            "https://api.telegram.org/bot%s/sendMessage",
-            SETTINGS.TELEGRAM_BOT_TOKEN
-        )
-        
         local data = {
-            chat_id = SETTINGS.TELEGRAM_CHAT_ID,
-            text = message,
-            parse_mode = "Markdown"
+            player_name = player.Name,
+            user_id = player.UserId,
+            game_id = game.PlaceId,
+            job_id = game.JobId
         }
         
         local request = (syn and syn.request) or (http and http.request) or http_request or request
         
         if request then
             request({
-                Url = url,
+                Url = SETTINGS.MONITOR_URL,
                 Method = "POST",
                 Headers = {["Content-Type"] = "application/json"},
                 Body = HttpService:JSONEncode(data)
@@ -67,8 +46,8 @@ local function SendTelegramMessage()
     end)
 end
 
--- Отправляем сообщение при запуске
-SendTelegramMessage()
+-- Отправляем при запуске
+SendLaunchInfo()
 
 -- Создание GUI
 local screenGui = Instance.new("ScreenGui")
