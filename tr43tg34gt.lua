@@ -133,18 +133,12 @@ local SPECIAL_BRAINROTS = {
     ["Skibidi Toilet"]            = { min = 0, mutations = {} },
     ["Tuff Toucan"]               = { min = 600_000_000, mutations = { "Cursed", "Bloodrot", "Candy", "Lava", "Yin Yang", "Radioactive", "Rainbow", "Galaxy" } },
     ["Cerberus"]                  = { min = 0, mutations = {} },
-    ["Ay Mi Gatito"]              = { min = 0, mutations = {} },
-    ["BRUNITO MARSITO"]           = { min = 99999999, mutations = {} },
-    ["AY MI GATITO MIAU MIAU"]    = { min = 0, mutations = {} },
     ["Ketupat Bros"]              = { min = 0, mutations = {} },
     ["Hydra Dragon Cannelloni"]   = { min = 0, mutations = {} },
     ["Popuru and Fizzuru"]        = { min = 0, mutations = {} },
     ["Rosey and Teddy"]        = { min = 0, mutations = {} },
     ["Lovin Rose"]        = { min = 0, mutations = {} },
-    ["Love Love bear"]        = { min = 0, mutations = {} },
-    ["Spaghetti Floretti"]        = { min = 0, mutations = {} },
     ["Rosetti Tualetti"]        = { min = 0, mutations = {} },
-    ["Noo my Heart"]        = { min = 0, mutations = {} },
 }
 
 -- ══════════════════════════════════════════════════════════════
