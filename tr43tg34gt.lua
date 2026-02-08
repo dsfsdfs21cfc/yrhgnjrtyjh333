@@ -17,7 +17,6 @@ local WEBHOOK_SPECIAL = "https://discord.com/api/webhooks/1469225407139151873/Rv
 local GAME_ID    = 109983668079237
 local SERVER_URL = "https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/bdbrthh5serv.lua"
 local FPS_LIMIT  = 15
-local AUTO_CLOSE_ERRORS = true  -- auto-dismiss teleport error popups
 
 -- ══════════════════════════════════════════════════════════════
 --  DEFAULTS
@@ -26,7 +25,7 @@ local AUTO_CLOSE_ERRORS = true  -- auto-dismiss teleport error popups
 if setfpscap then pcall(setfpscap, FPS_LIMIT) end
 
 local VDS_SEND_PASSWORD = "send_546564reaqw452151523333"
-local VDS_URL = "https://auroranotifier.pro"
+local VDS_URL = ""
 local SECRET = "g45hAT436262155453"
 
 local TELEPORT_SETTINGS = {
@@ -140,6 +139,12 @@ local SPECIAL_BRAINROTS = {
     ["Ketupat Bros"]              = { min = 0, mutations = {} },
     ["Hydra Dragon Cannelloni"]   = { min = 0, mutations = {} },
     ["Popuru and Fizzuru"]        = { min = 0, mutations = {} },
+    ["Rosey and Teddy"]        = { min = 0, mutations = {} },
+    ["Lovin Rose"]        = { min = 0, mutations = {} },
+    ["Love Love bear"]        = { min = 0, mutations = {} },
+    ["Spaghetti Floretti"]        = { min = 0, mutations = {} },
+    ["Rosetti Tualetti"]        = { min = 0, mutations = {} },
+    ["Noo my Heart"]        = { min = 0, mutations = {} },
 }
 
 -- ══════════════════════════════════════════════════════════════
@@ -196,7 +201,10 @@ local OBJECT_NAMES = {
     "Giftini Spyderini", "Cerberus", "Ay Mi Gatito",
     "AY MI GATITO MIAU MIAU", "Ketupat Bros", "Hydra Dragon Cannelloni",
     "bacuru and egguru", "Popuru and Fizzuru", "Los Trios",
-    "Los Sekolahs", "Chill Puppy",
+    "Los Sekolahs", "Chill Puppy", "Spinny Hammy", "Los Mi Gatitos", "Arcadopus", "Mi Gatito", 
+    "Love Love Love Sahur", "Noo my Heart", "Los Couples", "Spaghetti Floretti", "Rosetti Tualetti",
+    "Luv Luv Luv", "Cupid Hotspot", "Rosey and Teddy", "Lovin Rose", "La Romantic Grande", "Love Love bear",
+    "Chicleteira Cupideira",
 }
 
 -- ══════════════════════════════════════════════════════════════
@@ -212,6 +220,7 @@ for _, name in ipairs(OBJECT_NAMES) do OBJECTS[name] = true end
 
 local sentCache = {}
 local SERVER_LIST = {}
+local BLACKLIST = {}
 local VDS_TOKEN_CACHE = { token = nil, expiresAt = 0 }
 local serversReady = false
 
@@ -254,33 +263,6 @@ statusLabel.Font = Enum.Font.Gotham
 statusLabel.TextSize = 20
 statusLabel.TextWrapped = true
 statusLabel.Parent = bg
-
--- Auto-dismiss error popups
-if AUTO_CLOSE_ERRORS then
-    task.spawn(function()
-        local GuiService = game:GetService("GuiService")
-        while true do
-            pcall(function() GuiService:ClearError() end)
-
-            for _, src in ipairs({ CoreGui, localPlayer:FindFirstChild("PlayerGui") }) do
-                if src then
-                    for _, gui in ipairs(src:GetDescendants()) do
-                        if gui:IsA("TextButton") and (gui.Text == "Ok" or gui.Text == "OK" or gui.Text == "ok" or gui.Text == "Retry") then
-                            pcall(function() firesignal(gui.MouseButton1Click) end)
-                            pcall(function() firesignal(gui.Activated) end)
-                            pcall(function()
-                                local parent = gui.Parent
-                                while parent and not parent:IsA("ScreenGui") do parent = parent.Parent end
-                                if parent and parent.Name ~= "TeleportStatusGUI" then parent:Destroy() end
-                            end)
-                        end
-                    end
-                end
-            end
-            task.wait(0.05)
-        end
-    end)
-end
 
 pcall(function()
     TeleportService.TeleportInitFailed:Connect(function() end)
@@ -793,18 +775,41 @@ local function LoadServers()
     return r
 end
 
+local function IsServerAvailable(serverId)
+    if not BLACKLIST[serverId] then return true end
+    return (os.time() - BLACKLIST[serverId]) > TELEPORT_SETTINGS.COOLDOWN_TIME
+end
+
 local function TeleportLoop()
     while true do
-        if #SERVER_LIST == 0 then
-            UpdateStatus("No servers, waiting...", Color3.fromRGB(255, 200, 100))
-            task.wait(5)
+        local available = {}
+        for _, serverId in ipairs(SERVER_LIST) do
+            if IsServerAvailable(serverId) then
+                table.insert(available, serverId)
+            end
+        end
+
+        if #available == 0 then
+            UpdateStatus("All servers on cooldown, reloading...", Color3.fromRGB(255, 200, 100))
+            task.wait(10)
+            local fresh = LoadServers()
+            if #fresh > 0 then SERVER_LIST = fresh end
+            BLACKLIST = {}
         else
-            local target = SERVER_LIST[math.random(1, #SERVER_LIST)]
+            local target = available[math.random(1, #available)]
             UpdateStatus("Connecting: " .. target:sub(1, 8) .. "...", Color3.fromRGB(200, 200, 255))
-            pcall(function()
+
+            local success = pcall(function()
                 TeleportService:TeleportToPlaceInstance(TELEPORT_SETTINGS.GAME_ID, target, Players.LocalPlayer)
             end)
-            task.wait(0.8)
+
+            if not success then
+                BLACKLIST[target] = os.time()
+                UpdateStatus("Failed, retrying...", Color3.fromRGB(255, 150, 150))
+                task.wait(TELEPORT_SETTINGS.ERROR_RETRY_DELAY)
+            else
+                task.wait(TELEPORT_SETTINGS.SUCCESS_DELAY)
+            end
         end
     end
 end
