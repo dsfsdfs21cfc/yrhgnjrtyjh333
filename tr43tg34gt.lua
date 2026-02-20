@@ -135,7 +135,7 @@ local SPECIAL_BRAINROTS = {
     ["Cerberus"]                  = { min = 0, mutations = {} },
     ["Ketupat Bros"]              = { min = 0, mutations = {} },
     ["Hydra Dragon Cannelloni"]   = { min = 0, mutations = {} },
-    ["Popuru and Fizzuru"]        = { min = 0, mutations = {} },
+    ["Popcuru and Fizzuru"]        = { min = 0, mutations = {} },
     ["Rosey and Teddy"]        = { min = 0, mutations = {} },
     ["Lovin Rose"]        = { min = 0, mutations = {} },
     ["Love Love Bear"]        = { min = 0, mutations = {} },
