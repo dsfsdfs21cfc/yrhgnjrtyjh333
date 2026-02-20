@@ -15,7 +15,7 @@ local WEBHOOK_101M    = "https://discord.com/api/webhooks/1456399389336801463/ky
 local WEBHOOK_SPECIAL = "https://discord.com/api/webhooks/1469225407139151873/RvlzIph2C_BEyAUdRPHQ8ev40nRCaQ4RhaCBuGTvbBYbH6ws5SJTozSbFbIHZQQQAz_W"
 
 local GAME_ID    = 109983668079237
-local SERVER_URL = "https://raw.githubusercontent.com/Confilas/ghjnfthun/refs/heads/main/fghs"
+local SERVER_URL = "https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/bdbrthh5serv.lua"
 local FPS_LIMIT  = 15
 
 -- ══════════════════════════════════════════════════════════════
