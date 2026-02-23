@@ -203,7 +203,7 @@ local OBJECT_NAMES = {
     "Love Love Love Sahur", "Noo my Heart", "Los Couples", "Spaghetti Floretti", "Rosetti Tualetti",
     "Luv Luv Luv", "Cupid Hotspot", "Rosey and Teddy", "Lovin Rose", "La Romantic Grande", "Love Love bear",
     "Chicleteira Cupideira","Love Love bear","Love Love Bear","La Romantic Grande",
-    "La Food Combinasion",
+    "La Food Combinasion","Popcuru and Fizzuru",
 }
 
 -- ══════════════════════════════════════════════════════════════
