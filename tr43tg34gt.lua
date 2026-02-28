@@ -139,11 +139,18 @@ local SPECIAL_BRAINROTS = {
     ["Rosey and Teddy"]        = { min = 0, mutations = {} },
     ["Lovin Rose"]        = { min = 0, mutations = {} },
     ["Love Love Bear"]        = { min = 0, mutations = {} },
-    ["Love Love bear"]        = { min = 0, mutations = {} },
     ["Rosetti Tualetti"]        = { min = 0, mutations = {} },
     ["La Romantic Grande"]        = { min = 0, mutations = {} },
     ["La Food Combinasion"]        = { min = 0, mutations = {} },
     ["Los Amigos"]        = { min = 0, mutations = {} },
+    ["Los Sekolahs"]        = { min = 0, mutations = {} },
+    ["Antonio"]        = { min = 0, mutations = {} },
+    ["Sammyni Fattini"]        = { min = 0, mutations = {} },
+    ["Tirilikalika Tirilikalako"]        = { min = 0, mutations = {} },
+    ["Signore Carapace"]        = { min = 0, mutations = {} },
+
+    
+    
 }
 
 -- ══════════════════════════════════════════════════════════════
@@ -204,7 +211,8 @@ local OBJECT_NAMES = {
     "Love Love Love Sahur", "Noo my Heart", "Los Couples", "Spaghetti Floretti", "Rosetti Tualetti",
     "Luv Luv Luv", "Cupid Hotspot", "Rosey and Teddy", "Lovin Rose", "La Romantic Grande", "Love Love bear",
     "Chicleteira Cupideira","Love Love bear","Love Love Bear","La Romantic Grande",
-    "La Food Combinasion","Popcuru and Fizzuru","Los Amigos",
+    "La Food Combinasion","Popcuru and Fizzuru","Los Sekolahs","Los Amigos", "Antonio",
+    "Sammyni Fattini","Tirilikalika Tirilikalako","Signore Carapace",
 }
 
 -- ══════════════════════════════════════════════════════════════
