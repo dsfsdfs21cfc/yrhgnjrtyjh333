@@ -150,6 +150,7 @@ local SPECIAL_BRAINROTS = {
     ["Signore Carapace"]        = { min = 0, mutations = {} },
     ["Celestial Pegasus"]        = { min = 0, mutations = {} },
     ["Elefanto Frigo"]        = { min = 0, mutations = {} },
+    ["Ventoliero Pavonero"]        = { min = 0, mutations = {} },
 
     
     
@@ -215,7 +216,7 @@ local OBJECT_NAMES = {
     "Chicleteira Cupideira","Love Love bear","Love Love Bear","La Romantic Grande",
     "La Food Combinasion","Popcuru and Fizzuru","Los Sekolahs","Los Amigos", "Antonio",
     "Sammyni Fattini","Tirilikalika Tirilikalako","Signore Carapace","Celestial Pegasus",
-    "Elefanto Frigo",
+    "Elefanto Frigo","Ventoliero Pavonero",
 }
 
 -- ══════════════════════════════════════════════════════════════
