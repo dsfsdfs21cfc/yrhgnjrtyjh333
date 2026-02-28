@@ -148,6 +148,7 @@ local SPECIAL_BRAINROTS = {
     ["Sammyni Fattini"]        = { min = 0, mutations = {} },
     ["Tirilikalika Tirilikalako"]        = { min = 0, mutations = {} },
     ["Signore Carapace"]        = { min = 0, mutations = {} },
+    ["Celestial Pegasus"]        = { min = 0, mutations = {} },
 
     
     
@@ -212,7 +213,7 @@ local OBJECT_NAMES = {
     "Luv Luv Luv", "Cupid Hotspot", "Rosey and Teddy", "Lovin Rose", "La Romantic Grande", "Love Love bear",
     "Chicleteira Cupideira","Love Love bear","Love Love Bear","La Romantic Grande",
     "La Food Combinasion","Popcuru and Fizzuru","Los Sekolahs","Los Amigos", "Antonio",
-    "Sammyni Fattini","Tirilikalika Tirilikalako","Signore Carapace",
+    "Sammyni Fattini","Tirilikalika Tirilikalako","Signore Carapace","Celestial Pegasus",
 }
 
 -- ══════════════════════════════════════════════════════════════
